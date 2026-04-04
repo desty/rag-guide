@@ -1,17 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RAG Engineering Guide — Production-Grade Retrieval-Augmented Generation</title>
-  <link rel="alternate" hreflang="en" href="../en/expert/" />
-  <link rel="alternate" hreflang="ko" href="./" />
-  <link rel="canonical" href="https://desty.github.io/rag-guide/expert/" />
-  <meta name="description" content="프로덕션 RAG 엔지니어링 가이드. 아키텍처 패턴, 벤치마크, 트레이드오프, 운영 노하우.">
-  <meta property="og:title" content="RAG Engineering 실전 가이드">
-  <meta property="og:description" content="프로덕션 RAG 시스템 설계를 위한 엔지니어링 레퍼런스. 9개 영역 커버.">
-  <meta property="og:type" content="article">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../../expert/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
@@ -34,8 +27,8 @@
       <li><a href="#agentic">Agentic</a></li>
       <li><a href="#evaluation">Evaluation</a></li>
       <li><a href="#production">Production</a></li>
+      <li><a href="../../expert/" class="lang-switch" title="한국어">KO</a></li>
     </ul>
-    <a href="../en/expert/" class="lang-switch" title="English">EN</a>
   </div>
 </nav>
 
@@ -45,33 +38,33 @@
   <div class="container hero-content">
     <div class="hero-badge">For Engineers Building Production RAG Systems</div>
     <h1 class="hero-title">
-      RAG Engineering<br><span class="gradient-text">실전 가이드</span>
+      RAG Engineering<br><span class="gradient-text">Practical Guide</span>
     </h1>
     <p class="hero-subtitle">
-      프로덕션 수준의 RAG 시스템 설계를 위한 엔지니어링 레퍼런스.<br>
-      아키텍처 패턴, 벤치마크, 트레이드오프, 운영 노하우를 다룹니다.
+      An engineering reference for designing production-grade RAG systems.<br>
+      Covers architecture patterns, benchmarks, trade-offs, and operational best practices.
     </p>
     <div class="hero-stats">
       <div class="stat">
-        <span class="stat-number">9개</span>
-        <span class="stat-label">프로덕션 설계 영역</span>
+        <span class="stat-number">9</span>
+        <span class="stat-label">Production Design Areas</span>
       </div>
       <div class="stat">
         <span class="stat-number">2026</span>
-        <span class="stat-label">최신 논문 & 벤치마크 반영</span>
+        <span class="stat-label">Latest Papers & Benchmarks</span>
       </div>
       <div class="stat">
-        <span class="stat-number">실전</span>
-        <span class="stat-label">트레이드오프 · 비용 · 레이턴시</span>
+        <span class="stat-number">Real</span>
+        <span class="stat-label">Trade-offs · Cost · Latency</span>
       </div>
     </div>
     <div class="hero-cta-row">
       <a href="#architecture" class="hero-cta">
-        <span>시작하기</span>
+        <span>Get Started</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
       </a>
       <a href="../" class="hero-cta hero-cta-outline">
-        <span>← 입문 가이드</span>
+        <span>&larr; Intro Guide</span>
       </a>
     </div>
   </div>
@@ -84,11 +77,11 @@
       <span class="section-num">01</span>
       <div>
         <h2>Production Architecture</h2>
-        <p class="section-desc">프로덕션 RAG 시스템의 전체 아키텍처와 핵심 설계 결정 포인트.</p>
+        <p class="section-desc">Overall architecture of a production RAG system and key design decision points.</p>
       </div>
     </div>
 
-    <!-- 아키텍처 다이어그램 -->
+    <!-- Architecture Diagram -->
     <div class="arch-box reveal">
       <svg class="arch-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -114,7 +107,7 @@
         </defs>
         <rect width="1000" height="600" rx="12" fill="url(#bgGrad)"/>
 
-        <!-- ===== OFFLINE PIPELINE (상단) ===== -->
+        <!-- ===== OFFLINE PIPELINE (Top) ===== -->
         <rect x="20" y="16" width="960" height="160" rx="10" fill="none" stroke="#a78bfa" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="6 4"/>
         <text x="40" y="38" fill="#a78bfa" font-size="11" font-weight="700" letter-spacing="2" font-family="monospace">OFFLINE — INGESTION PIPELINE</text>
 
@@ -159,21 +152,21 @@
         <rect x="815" y="138" width="130" height="16" rx="4" fill="#16161f" stroke="#34d399" stroke-opacity="0.3" stroke-width="1"/>
         <text x="880" y="150" text-anchor="middle" fill="#34d399" font-size="8">Metadata Store</text>
 
-        <!-- ===== ONLINE PIPELINE (하단) ===== -->
+        <!-- ===== ONLINE PIPELINE (Bottom) ===== -->
         <rect x="20" y="195" width="960" height="390" rx="10" fill="none" stroke="#22d3ee" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="6 4"/>
         <text x="40" y="217" fill="#22d3ee" font-size="11" font-weight="700" letter-spacing="2" font-family="monospace">ONLINE — QUERY PIPELINE</text>
 
         <!-- User -->
         <rect x="40" y="250" width="100" height="55" rx="8" fill="#1e1e2a" stroke="#e8e8ed" stroke-width="1.5"/>
         <text x="90" y="275" text-anchor="middle" fill="#e8e8ed" font-size="12" font-weight="700">User</text>
-        <text x="90" y="293" text-anchor="middle" fill="#9898a8" font-size="8">Query 입력</text>
+        <text x="90" y="293" text-anchor="middle" fill="#9898a8" font-size="8">Query Input</text>
 
         <line x1="140" y1="277" x2="175" y2="277" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrC)"/>
 
         <!-- Semantic Cache -->
         <rect x="40" y="330" width="100" height="44" rx="8" fill="#16161f" stroke="#34d399" stroke-opacity="0.4" stroke-width="1"/>
         <text x="90" y="350" text-anchor="middle" fill="#34d399" font-size="10" font-weight="600">Semantic Cache</text>
-        <text x="90" y="366" text-anchor="middle" fill="#9898a8" font-size="8">Hit → 바로 응답</text>
+        <text x="90" y="366" text-anchor="middle" fill="#9898a8" font-size="8">Hit → Direct Response</text>
         <line x1="90" y1="305" x2="90" y2="328" stroke="#34d399" stroke-width="1" stroke-dasharray="4 3"/>
 
         <!-- Query Understanding -->
@@ -188,7 +181,7 @@
         <!-- Router -->
         <rect x="375" y="250" width="90" height="55" rx="10" fill="#fb923c" fill-opacity="0.1" stroke="#fb923c" stroke-width="2"/>
         <text x="420" y="275" text-anchor="middle" fill="#fb923c" font-size="13" font-weight="800">Router</text>
-        <text x="420" y="293" text-anchor="middle" fill="#9898a8" font-size="8">경로 분기</text>
+        <text x="420" y="293" text-anchor="middle" fill="#9898a8" font-size="8">Path Routing</text>
 
         <!-- Router → Hybrid Search -->
         <line x1="465" y1="277" x2="510" y2="277" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arr)"/>
@@ -229,7 +222,7 @@
         <rect x="870" y="355" width="110" height="30" rx="6" fill="#34d399" fill-opacity="0.12" stroke="#34d399" stroke-width="1.5"/>
         <text x="925" y="374" text-anchor="middle" fill="#34d399" font-size="11" font-weight="700">Response</text>
 
-        <!-- ===== Evaluation Layer (하단) ===== -->
+        <!-- ===== Evaluation Layer (Bottom) ===== -->
         <rect x="375" y="400" width="280" height="60" rx="10" fill="#1e1e2a" stroke="#f472b6" stroke-width="1.5"/>
         <text x="515" y="422" text-anchor="middle" fill="#f472b6" font-size="12" font-weight="700">Evaluation & Monitoring</text>
         <text x="515" y="440" text-anchor="middle" fill="#9898a8" font-size="9">Faithfulness · Relevancy · Latency · Cost Tracking</text>
@@ -240,7 +233,7 @@
         <line x1="780" y1="310" x2="560" y2="398" stroke="#f472b6" stroke-width="1" stroke-dasharray="4 3"/>
         <line x1="925" y1="385" x2="655" y2="410" stroke="#f472b6" stroke-width="1" stroke-dasharray="4 3"/>
 
-        <!-- Guard Rails (오른쪽 하단) -->
+        <!-- Guard Rails (Bottom Right) -->
         <rect x="700" y="400" width="150" height="60" rx="10" fill="#1e1e2a" stroke="#f87171" stroke-width="1.5"/>
         <text x="775" y="422" text-anchor="middle" fill="#f87171" font-size="12" font-weight="700">Guardrails</text>
         <text x="775" y="440" text-anchor="middle" fill="#9898a8" font-size="9">Hallucination Detection</text>
@@ -266,53 +259,53 @@
       </svg>
     </div>
 
-    <!-- 설계 결정 포인트 -->
-    <h3 class="sub-title reveal">핵심 설계 결정 포인트</h3>
+    <!-- Key Design Decision Points -->
+    <h3 class="sub-title reveal">Key Design Decision Points</h3>
     <div class="decision-grid reveal">
       <div class="decision-card">
-        <div class="decision-q">Indexing 전략은?</div>
+        <div class="decision-q">What indexing strategy?</div>
         <div class="decision-options">
           <div class="opt">
             <strong>Dense-only</strong>
-            <span>단순 구현, 시맨틱 매칭 우수. 키워드에 약함.</span>
+            <span>Simple implementation, strong semantic matching. Weak on keywords.</span>
           </div>
           <div class="opt recommended">
             <strong>Hybrid (Dense + BM25) ✓</strong>
-            <span>대부분의 프로덕션 권장. RRF로 결합. 검색 실패율 ~35% 감소.</span>
+            <span>Recommended for most production use. Combined via RRF. ~35% reduction in retrieval failures.</span>
           </div>
           <div class="opt">
             <strong>Hybrid + Late Interaction</strong>
-            <span>최고 정확도. ColBERT/ColPali. 스토리지 5~10x 증가.</span>
+            <span>Highest accuracy. ColBERT/ColPali. 5-10x storage increase.</span>
           </div>
         </div>
       </div>
       <div class="decision-card">
-        <div class="decision-q">Reranker를 도입해야 할까?</div>
+        <div class="decision-q">Should you adopt a Reranker?</div>
         <div class="decision-options">
           <div class="opt recommended">
-            <strong>Yes — 거의 항상 ✓</strong>
-            <span>MAP +52% 향상. 100ms 이하 추가 레이턴시. Top-100 → Top-5 재순위.</span>
+            <strong>Yes — Almost always ✓</strong>
+            <span>+52% MAP improvement. Under 100ms added latency. Re-ranks Top-100 → Top-5.</span>
           </div>
           <div class="opt">
-            <strong>Skip — 초저지연 요구시</strong>
-            <span>P99 < 200ms 필요한 실시간 서비스. Embedding 품질로 보완.</span>
+            <strong>Skip — For ultra-low latency</strong>
+            <span>Real-time services requiring P99 < 200ms. Compensate with embedding quality.</span>
           </div>
         </div>
       </div>
       <div class="decision-card">
-        <div class="decision-q">Query Processing은 얼마나?</div>
+        <div class="decision-q">How much Query Processing?</div>
         <div class="decision-options">
           <div class="opt">
             <strong>None (Naive)</strong>
-            <span>원본 쿼리 그대로. 빠르지만 복합 질문에 약함.</span>
+            <span>Use original query as-is. Fast but weak on complex questions.</span>
           </div>
           <div class="opt recommended">
             <strong>Rewrite + Classification ✓</strong>
-            <span>LLM으로 쿼리 최적화. 50~100ms 추가. 대부분 충분.</span>
+            <span>Optimize query via LLM. +50-100ms. Sufficient for most cases.</span>
           </div>
           <div class="opt">
             <strong>Full (HyDE + Decomposition)</strong>
-            <span>최고 재현율. 300~500ms 추가. 복잡한 분석 질문에 적합.</span>
+            <span>Highest recall. +300-500ms. Ideal for complex analytical questions.</span>
           </div>
         </div>
       </div>
@@ -327,76 +320,76 @@
       <span class="section-num">02</span>
       <div>
         <h2>Chunking Strategy</h2>
-        <p class="section-desc">청킹은 RAG 품질의 기초. 전략에 따라 검색 정확도가 20~40% 달라집니다.</p>
+        <p class="section-desc">Chunking is the foundation of RAG quality. The right strategy can improve retrieval accuracy by 20-40%.</p>
       </div>
     </div>
 
     <div class="insight-box reveal">
       <div class="insight-icon">📊</div>
       <div class="insight-text">
-        <strong>Vectara 벤치마크 핵심 결과:</strong> Recursive 청킹이 69% 승률로 가장 안정적. Semantic 청킹은 높은 재현율을 보이지만 조각이 작아 end-to-end 정확도에서 불리. 청크 크기 256~512 토큰이 대부분의 태스크에서 최적.
+        <strong>Vectara Benchmark Key Findings:</strong> Recursive chunking was most stable with a 69% win rate. Semantic chunking shows high recall but produces smaller fragments, which can hurt end-to-end accuracy. Chunk sizes of 256-512 tokens are optimal for most tasks.
       </div>
     </div>
 
-    <!-- 청킹 비교 테이블 -->
+    <!-- Chunking Comparison Table -->
     <div class="table-wrap reveal">
       <table class="data-table">
         <thead>
           <tr>
-            <th>전략</th>
-            <th>작동 방식</th>
-            <th>최적 크기</th>
-            <th>정밀도</th>
-            <th>재현율</th>
-            <th>구현 복잡도</th>
-            <th>추천 용도</th>
+            <th>Strategy</th>
+            <th>How It Works</th>
+            <th>Optimal Size</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>Complexity</th>
+            <th>Recommended For</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><code>Fixed-size</code></td>
-            <td>고정 토큰 수 + overlap</td>
+            <td>Fixed token count + overlap</td>
             <td>256~512 tok</td>
             <td class="score mid">●●●○</td>
             <td class="score mid">●●●○</td>
-            <td class="score easy">낮음</td>
-            <td>MVP, 빠른 프로토타입</td>
+            <td class="score easy">Low</td>
+            <td>MVP, rapid prototyping</td>
           </tr>
           <tr class="highlight-row">
             <td><code>Recursive</code></td>
-            <td>구분자 계층으로 재귀 분할</td>
+            <td>Recursive split by delimiter hierarchy</td>
             <td>512 tok</td>
             <td class="score high">●●●●</td>
             <td class="score high">●●●●</td>
-            <td class="score easy">낮음</td>
-            <td><strong>범용 추천 (기본값)</strong></td>
+            <td class="score easy">Low</td>
+            <td><strong>General-purpose (default)</strong></td>
           </tr>
           <tr>
             <td><code>Semantic</code></td>
-            <td>임베딩 유사도 변화점에서 분할</td>
-            <td>가변</td>
+            <td>Split at embedding similarity breakpoints</td>
+            <td>Variable</td>
             <td class="score mid">●●●○</td>
             <td class="score high">●●●●</td>
-            <td class="score medium">중간</td>
-            <td>다주제 문서, 대화록</td>
+            <td class="score medium">Medium</td>
+            <td>Multi-topic docs, transcripts</td>
           </tr>
           <tr>
             <td><code>Parent-Child</code></td>
-            <td>작은 청크 검색 → 큰 청크 반환</td>
+            <td>Search small chunks → Return large chunks</td>
             <td>128 / 512</td>
             <td class="score high">●●●●</td>
             <td class="score high">●●●●</td>
-            <td class="score hard">높음</td>
-            <td>긴 보고서, 기술 문서</td>
+            <td class="score hard">High</td>
+            <td>Long reports, technical docs</td>
           </tr>
           <tr>
             <td><code>Document Summary</code></td>
-            <td>문서 요약으로 검색 → 원문 반환</td>
-            <td>요약 200 tok</td>
+            <td>Search by doc summary → Return original</td>
+            <td>Summary 200 tok</td>
             <td class="score high">●●●●</td>
             <td class="score mid">●●●○</td>
-            <td class="score hard">높음</td>
-            <td>글로벌 질문, 요약형 답변</td>
+            <td class="score hard">High</td>
+            <td>Global questions, summary answers</td>
           </tr>
         </tbody>
       </table>
@@ -406,60 +399,60 @@
     <div class="technique-deep reveal">
       <div class="deep-header">
         <h4>Contextual Retrieval <span class="badge">Anthropic, 2024</span></h4>
-        <span class="impact">검색 실패율 67% 감소</span>
+        <span class="impact">67% reduction in retrieval failures</span>
       </div>
-      <p>각 청크에 문서 수준 맥락을 접두사로 추가한 뒤 임베딩합니다. LLM이 자동으로 맥락 문장을 생성합니다.</p>
+      <p>Prepend document-level context as a prefix to each chunk before embedding. The LLM automatically generates contextual sentences.</p>
       <div class="code-block">
-        <div class="code-label">Before (일반 청크)</div>
-        <pre>"매출은 전년 대비 15% 증가했다."</pre>
+        <div class="code-label">Before (Standard Chunk)</div>
+        <pre>"Revenue increased 15% year-over-year."</pre>
       </div>
       <div class="code-block">
-        <div class="code-label">After (Contextual 청크)</div>
-        <pre>"[2024년 3분기 실적보고서, 영업이익 섹션] 매출은 전년 대비 15% 증가했다."</pre>
+        <div class="code-label">After (Contextual Chunk)</div>
+        <pre>"[Q3 2024 Earnings Report, Operating Profit Section] Revenue increased 15% year-over-year."</pre>
       </div>
       <div class="metric-row">
         <div class="metric-item">
           <span class="metric-value">49%↓</span>
-          <span class="metric-label">Contextual Embedding 단독</span>
+          <span class="metric-label">Contextual Embedding alone</span>
         </div>
         <div class="metric-item">
           <span class="metric-value">67%↓</span>
-          <span class="metric-label">+ BM25 결합 시</span>
+          <span class="metric-label">Combined with BM25</span>
         </div>
         <div class="metric-item">
           <span class="metric-value">$1.02</span>
-          <span class="metric-label">10K 청크 처리 비용 (Claude Haiku)</span>
+          <span class="metric-label">Cost for 10K chunks (Claude Haiku)</span>
         </div>
       </div>
     </div>
 
-    <!-- Late Chunking (2025~2026 신기술) -->
+    <!-- Late Chunking (2025~2026 New Technique) -->
     <div class="technique-deep reveal">
       <div class="deep-header">
-        <h4>Late Chunking <span class="badge">Jina AI, 2024 — 2025~2026 주류화</span></h4>
-        <span class="impact">추가 학습 없이 청크 품질 향상</span>
+        <h4>Late Chunking <span class="badge">Jina AI, 2024 — Mainstream 2025~2026</span></h4>
+        <span class="impact">Better chunk quality without extra training</span>
       </div>
-      <p>기존: <strong>먼저 자르고 → 각각 임베딩</strong> (문맥 손실). Late Chunking: <strong>전체 문서를 먼저 임베딩 → 토큰 벡터에서 청크 추출</strong>. 긴 컨텍스트 모델(8K+ tokens)의 어텐션이 문서 전체를 보기 때문에, 각 청크가 주변 맥락을 자연스럽게 반영합니다.</p>
+      <p>Traditional: <strong>chunk first → embed each</strong> (context loss). Late Chunking: <strong>embed the full document first → extract chunks from token vectors</strong>. Long-context models (8K+ tokens) attend to the entire document, so each chunk naturally reflects its surrounding context.</p>
       <div class="code-block">
         <div class="code-label">Naive Chunking</div>
-        <pre>문서 → [청크1, 청크2, 청크3] → [embed(청크1), embed(청크2), embed(청크3)]</pre>
+        <pre>Document → [chunk1, chunk2, chunk3] → [embed(chunk1), embed(chunk2), embed(chunk3)]</pre>
       </div>
       <div class="code-block">
         <div class="code-label">Late Chunking</div>
-        <pre>문서 → embed(전체 문서) → 토큰 벡터 → [pool(토큰1~50), pool(토큰51~100), ...]</pre>
+        <pre>Document → embed(full document) → token vectors → [pool(tokens1~50), pool(tokens51~100), ...]</pre>
       </div>
       <div class="metric-row">
         <div class="metric-item">
           <span class="metric-value">0 cost</span>
-          <span class="metric-label">추가 LLM 호출 불필요 (vs Contextual)</span>
+          <span class="metric-label">No extra LLM calls (vs Contextual)</span>
         </div>
         <div class="metric-item">
           <span class="metric-value">8K+</span>
-          <span class="metric-label">토큰 컨텍스트 모델 필요</span>
+          <span class="metric-label">Requires long-context model</span>
         </div>
         <div class="metric-item">
           <span class="metric-value">jina-v3</span>
-          <span class="metric-label">API에서 late_chunking 파라미터 지원</span>
+          <span class="metric-label">API supports late_chunking param</span>
         </div>
       </div>
     </div>
@@ -467,29 +460,29 @@
     <!-- Agentic Chunking -->
     <div class="technique-deep reveal">
       <div class="deep-header">
-        <h4>Agentic Chunking <span class="badge">2025~2026 트렌드</span></h4>
-        <span class="impact">문서 유형별 최적 전략 자동 선택</span>
+        <h4>Agentic Chunking <span class="badge">2025~2026 Trend</span></h4>
+        <span class="impact">Automatic optimal strategy per document type</span>
       </div>
-      <p>LLM Agent가 문서 특성을 분석해서 <strong>청킹 전략 자체를 동적으로 결정</strong>합니다. 연구 논문 → Semantic Chunking, 재무 보고서 → 페이지 단위, 코드 파일 → 함수 단위. 고정 전략의 한계를 근본적으로 해결하지만 인제스팅 비용이 증가합니다.</p>
+      <p>An LLM Agent analyzes document characteristics and <strong>dynamically determines the chunking strategy itself</strong>. Research papers → Semantic Chunking, financial reports → page-based, code files → function-level. Fundamentally solves the limitations of fixed strategies, but increases ingestion cost.</p>
     </div>
 
-    <!-- 실전 팁 -->
+    <!-- Practical Tips -->
     <div class="tips-row reveal">
       <div class="tip">
-        <div class="tip-title">💡 Overlap 전략</div>
-        <p>청크 간 <code>10~20%</code> overlap 권장. 문맥 단절을 방지. 50% 이상은 중복 노이즈 발생.</p>
+        <div class="tip-title">💡 Overlap Strategy</div>
+        <p><code>10-20%</code> overlap between chunks is recommended. Prevents context breaks. Over 50% causes duplicate noise.</p>
       </div>
       <div class="tip">
-        <div class="tip-title">💡 코드 청킹</div>
-        <p>AST 기반 분할이 가장 효과적. 함수/클래스 단위로 자른 뒤 시그니처를 접두사로 추가.</p>
+        <div class="tip-title">💡 Code Chunking</div>
+        <p>AST-based splitting is most effective. Split by function/class and prepend signatures as prefixes.</p>
       </div>
       <div class="tip">
-        <div class="tip-title">💡 테이블 처리</div>
-        <p>표는 Markdown/HTML로 변환 후 통째로 하나의 청크로. 행 단위 분할은 의미 파괴.</p>
+        <div class="tip-title">💡 Table Handling</div>
+        <p>Convert tables to Markdown/HTML and keep as a single chunk. Row-level splitting destroys meaning.</p>
       </div>
       <div class="tip">
         <div class="tip-title">💡 Contextual vs Late</div>
-        <p>Contextual Retrieval은 LLM 비용 발생하지만 모든 임베딩 모델에 적용 가능. Late Chunking은 무비용이지만 호환 모델 필요. <strong>둘 다 적용 가능하면 결합이 최선.</strong></p>
+        <p>Contextual Retrieval incurs LLM cost but works with any embedding model. Late Chunking is free but requires compatible models. <strong>If both are available, combining them is best.</strong></p>
       </div>
     </div>
   </div>
@@ -502,11 +495,11 @@
       <span class="section-num">03</span>
       <div>
         <h2>Embedding Models</h2>
-        <p class="section-desc">임베딩 모델 선택이 검색 품질의 50% 이상을 결정합니다. 도메인 벤치마크가 핵심.</p>
+        <p class="section-desc">Embedding model choice determines over 50% of retrieval quality. Domain benchmarks are key.</p>
       </div>
     </div>
 
-    <!-- 모델 비교 테이블 -->
+    <!-- Model Comparison Table -->
     <div class="table-wrap reveal">
       <table class="data-table">
         <thead>
@@ -515,8 +508,8 @@
             <th>Dim</th>
             <th>Max Tokens</th>
             <th>MTEB Avg</th>
-            <th>다국어</th>
-            <th>특징</th>
+            <th>Multilingual</th>
+            <th>Features</th>
           </tr>
         </thead>
         <tbody>
@@ -525,78 +518,78 @@
             <td>1024</td>
             <td>128K</td>
             <td class="score high">65.2</td>
-            <td>100+언어</td>
-            <td>MTEB 1위, 멀티모달, 압축 지원</td>
+            <td>100+ langs</td>
+            <td>MTEB #1, multimodal, compression</td>
           </tr>
           <tr>
             <td><code>OpenAI text-embedding-3-large</code></td>
             <td>3072</td>
             <td>8191</td>
             <td class="score high">64.6</td>
-            <td>다국어</td>
-            <td>Matryoshka (차원 축소 가능)</td>
+            <td>Multilingual</td>
+            <td>Matryoshka (dimension reduction)</td>
           </tr>
           <tr>
             <td><code>Voyage-3-large</code></td>
             <td>1024</td>
             <td>32K</td>
             <td class="score high">64.8</td>
-            <td>다국어</td>
-            <td>코드 특화 모델 별도 제공</td>
+            <td>Multilingual</td>
+            <td>Separate code-specific model</td>
           </tr>
           <tr>
             <td><code>BGE-M3</code></td>
             <td>1024</td>
             <td>8192</td>
             <td class="score mid">62.1</td>
-            <td>100+언어</td>
-            <td>Dense+Sparse+ColBERT 동시 출력</td>
+            <td>100+ langs</td>
+            <td>Dense+Sparse+ColBERT output</td>
           </tr>
           <tr>
             <td><code>Jina-embeddings-v3</code></td>
             <td>1024</td>
             <td>8192</td>
             <td class="score mid">61.5</td>
-            <td>89언어</td>
-            <td>Task-specific LoRA, 오픈소스</td>
+            <td>89 langs</td>
+            <td>Task-specific LoRA, open-source</td>
           </tr>
           <tr>
             <td><code>E5-Mistral-7B</code></td>
             <td>4096</td>
             <td>32K</td>
             <td class="score mid">61.8</td>
-            <td>영어 중심</td>
-            <td>LLM 기반, 지시문 지원</td>
+            <td>English-centric</td>
+            <td>LLM-based, instruction support</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div class="callout reveal">
-      <strong>⚠️ MTEB만 보지 마세요.</strong> 범용 벤치마크 점수와 실제 도메인 성능은 다릅니다. 반드시 <strong>자체 데이터셋에서 벤치마크</strong>하세요. 도메인 특화 파인튜닝 시 12~30% 추가 성능 향상 가능.
+      <strong>⚠️ Don't rely on MTEB alone.</strong> Generic benchmark scores differ from actual domain performance. Always <strong>benchmark on your own dataset</strong>. Domain-specific fine-tuning can yield 12-30% additional improvement.
     </div>
 
-    <!-- 선택 가이드 -->
+    <!-- Selection Guide -->
     <div class="guide-grid reveal">
       <div class="guide-card">
-        <h4>사내 문서 검색 (한국어)</h4>
-        <div class="guide-rec">Cohere embed-v4 또는 BGE-M3</div>
-        <p>한국어 성능이 중요. BGE-M3는 오픈소스로 self-host 가능. Cohere는 API 품질 최고.</p>
+        <h4>Enterprise Document Search</h4>
+        <div class="guide-rec">Cohere embed-v4 or BGE-M3</div>
+        <p>Multilingual performance matters. BGE-M3 is open-source and self-hostable. Cohere offers the best API quality.</p>
       </div>
       <div class="guide-card">
-        <h4>코드 검색</h4>
-        <div class="guide-rec">Voyage-code-3 또는 CodeBERT 계열</div>
-        <p>코드 특화 모델 필수. 일반 임베딩 모델은 코드 의미 이해에 취약.</p>
+        <h4>Code Search</h4>
+        <div class="guide-rec">Voyage-code-3 or CodeBERT family</div>
+        <p>Code-specific models are essential. General embedding models are weak at understanding code semantics.</p>
       </div>
       <div class="guide-card">
-        <h4>멀티모달 (이미지 + 텍스트)</h4>
-        <div class="guide-rec">Cohere embed-v4 또는 ColPali</div>
-        <p>PDF 스캔, 차트, 다이어그램 포함 문서. 텍스트 추출 없이 직접 임베딩.</p>
+        <h4>Multimodal (Image + Text)</h4>
+        <div class="guide-rec">Cohere embed-v4 or ColPali</div>
+        <p>Documents with PDF scans, charts, diagrams. Direct embedding without text extraction.</p>
       </div>
       <div class="guide-card">
-        <h4>비용 최적화</h4>
-        <div class="guide-rec">Matryoshka (OpenAI 256d) 또는 Binary Quantization</div>
-        <p>차원을 3072 → 256으로 축소해도 성능 5%만 감소. 스토리지 12x 절약.</p>
+        <h4>Cost Optimization</h4>
+        <div class="guide-rec">Matryoshka (OpenAI 256d) or Binary Quantization</div>
+        <p>Reducing dimensions from 3072 → 256 loses only 5% accuracy. Saves 12x storage.</p>
       </div>
     </div>
   </div>
@@ -609,69 +602,69 @@
       <span class="section-num">04</span>
       <div>
         <h2>Retrieval Engineering</h2>
-        <p class="section-desc">검색 품질이 전체 RAG 성능의 상한선을 결정합니다. 같은 LLM에서 검색만 개선해도 50%+ 향상.</p>
+        <p class="section-desc">Retrieval quality sets the upper bound of overall RAG performance. Improving retrieval alone can yield 50%+ gains with the same LLM.</p>
       </div>
     </div>
 
-    <!-- Query Translation 패턴 -->
-    <h3 class="sub-title reveal">Query Translation 패턴</h3>
+    <!-- Query Translation Patterns -->
+    <h3 class="sub-title reveal">Query Translation Patterns</h3>
     <div class="pattern-grid reveal">
       <div class="pattern-card">
         <h4>Multi-Query</h4>
-        <p>원본 질문을 <strong>3~5개 관점</strong>에서 재작성 후 각각 검색. 결과를 RRF로 결합.</p>
-        <div class="when-use">재현율이 중요할 때. 쿼리가 모호할 때.</div>
-        <div class="tradeoff">⏱ +200ms · 💰 LLM 호출 1회 추가</div>
+        <p>Rewrite the original question from <strong>3-5 perspectives</strong>, search each, and combine results via RRF.</p>
+        <div class="when-use">When recall matters. When the query is ambiguous.</div>
+        <div class="tradeoff">⏱ +200ms · 💰 1 additional LLM call</div>
       </div>
       <div class="pattern-card">
         <h4>HyDE (Hypothetical Document)</h4>
-        <p>LLM이 <strong>가상 답변</strong>을 생성 → 답변의 임베딩으로 검색. 질문보다 답변이 문서와 더 유사하다는 통찰.</p>
-        <div class="when-use">짧은 질문, 개념적 질문. Zero-shot 검색.</div>
-        <div class="tradeoff">⏱ +300ms · 💰 LLM 호출 1회 · ⚠️ 할루시네이션 전파 위험</div>
+        <p>LLM generates a <strong>hypothetical answer</strong> → search using the answer's embedding. Based on the insight that answers are more similar to documents than questions.</p>
+        <div class="when-use">Short queries, conceptual questions. Zero-shot retrieval.</div>
+        <div class="tradeoff">⏱ +300ms · 💰 1 LLM call · ⚠️ Risk of hallucination propagation</div>
       </div>
       <div class="pattern-card">
         <h4>Step-Back Prompting</h4>
-        <p>구체적 질문에서 <strong>한 단계 추상화</strong>된 질문을 생성해서 더 넓은 범위로 검색.</p>
-        <div class="when-use">"X의 Y는?" → "X의 전반적 특성은?"</div>
-        <div class="tradeoff">⏱ +200ms · 과도한 일반화 위험</div>
+        <p>Generate a <strong>one-step-abstracted</strong> question from a specific query to search a broader scope.</p>
+        <div class="when-use">"What is X's Y?" → "What are X's general characteristics?"</div>
+        <div class="tradeoff">⏱ +200ms · Risk of over-generalization</div>
       </div>
       <div class="pattern-card">
         <h4>Decomposition</h4>
-        <p>복합 질문을 <strong>하위 질문으로 분해</strong>. 각각 독립적으로 검색 후 종합.</p>
-        <div class="when-use">비교 질문, 다중 조건 질문, 분석 요청.</div>
-        <div class="tradeoff">⏱ +500ms~2s · 💰 다수 검색 · 가장 높은 정확도</div>
+        <p>Break complex questions into <strong>sub-questions</strong>. Search each independently, then synthesize.</p>
+        <div class="when-use">Comparison questions, multi-condition queries, analysis requests.</div>
+        <div class="tradeoff">⏱ +500ms~2s · 💰 Multiple searches · Highest accuracy</div>
       </div>
       <div class="pattern-card">
         <h4>RAG Fusion</h4>
-        <p>Multi-Query + <strong>Reciprocal Rank Fusion</strong>. 다중 쿼리 결과를 순위 기반으로 결합.</p>
-        <div class="when-use">높은 재현율 + 다양성 필요. 검색 결과 중복 방지.</div>
-        <div class="tradeoff">⏱ +300ms · RRF 상수 k=60이 일반적</div>
+        <p>Multi-Query + <strong>Reciprocal Rank Fusion</strong>. Combines multi-query results using rank-based scoring.</p>
+        <div class="when-use">When high recall + diversity is needed. Prevents duplicate results.</div>
+        <div class="tradeoff">⏱ +300ms · RRF constant k=60 is typical</div>
       </div>
     </div>
 
     <!-- Hybrid Search -->
-    <h3 class="sub-title reveal">Hybrid Search 설계</h3>
+    <h3 class="sub-title reveal">Hybrid Search Design</h3>
     <div class="deep-section reveal">
       <div class="formula-box">
         <div class="formula-label">RRF (Reciprocal Rank Fusion)</div>
-        <code class="formula">score(d) = Σ 1 / (k + rank_i(d)) &nbsp;&nbsp; // k = 60 (일반적)</code>
+        <code class="formula">score(d) = Σ 1 / (k + rank_i(d)) &nbsp;&nbsp; // k = 60 (typical)</code>
       </div>
       <div class="formula-box">
         <div class="formula-label">Weighted Hybrid (Convex Combination)</div>
         <code class="formula">score(d) = α · dense_score(d) + (1-α) · sparse_score(d) &nbsp;&nbsp; // α ∈ [0, 1]</code>
       </div>
       <div class="alpha-guide">
-        <h4>Alpha 가이드</h4>
+        <h4>Alpha Guide</h4>
         <div class="alpha-row">
           <span class="alpha-val">α = 0.3</span>
-          <span>키워드 중심 (제품명, 코드, 고유명사 많을 때)</span>
+          <span>Keyword-heavy (many product names, code, proper nouns)</span>
         </div>
         <div class="alpha-row">
           <span class="alpha-val">α = 0.5</span>
-          <span>균형 (범용 추천, 대부분의 QA에 적합)</span>
+          <span>Balanced (general-purpose, suitable for most QA)</span>
         </div>
         <div class="alpha-row">
           <span class="alpha-val">α = 0.7</span>
-          <span>시맨틱 중심 (자연어 질문, 개념 검색, 유사 문서 탐색)</span>
+          <span>Semantic-heavy (natural language queries, concept search, similar doc discovery)</span>
         </div>
       </div>
     </div>
@@ -679,16 +672,16 @@
     <!-- ColBERT -->
     <div class="technique-deep reveal">
       <div class="deep-header">
-        <h4>Late Interaction: ColBERT <span class="badge">Optional — 고급</span></h4>
-        <span class="impact">Bi-Encoder 속도 + Cross-Encoder 정확도</span>
+        <h4>Late Interaction: ColBERT <span class="badge">Optional — Advanced</span></h4>
+        <span class="impact">Bi-Encoder speed + Cross-Encoder accuracy</span>
       </div>
-      <p><strong>토큰별 임베딩</strong>을 저장하고, MaxSim(Maximum Similarity) 연산으로 유사도를 계산합니다. 각 쿼리 토큰과 가장 유사한 문서 토큰의 점수를 합산.</p>
+      <p>Stores <strong>per-token embeddings</strong> and computes similarity via MaxSim (Maximum Similarity). Sums the highest-matching document token score for each query token.</p>
       <div class="tradeoff-box">
         <div class="trade-pro">
-          <strong>장점:</strong> 기존 Bi-Encoder 대비 정확도 5~15% 향상. 인덱스 사전 구축으로 검색 시 빠름.
+          <strong>Pros:</strong> 5-15% accuracy improvement over standard Bi-Encoders. Pre-built index enables fast retrieval.
         </div>
         <div class="trade-con">
-          <strong>단점:</strong> 스토리지 5~10x 증가 (토큰별 벡터 저장). 인덱싱 비용 증가. Qdrant, Vespa 등 제한된 DB 지원.
+          <strong>Cons:</strong> 5-10x storage increase (per-token vectors). Higher indexing cost. Limited DB support (Qdrant, Vespa, etc.).
         </div>
       </div>
     </div>
@@ -702,7 +695,7 @@
       <span class="section-num">05</span>
       <div>
         <h2>Reranking</h2>
-        <p class="section-desc">검색 후 재순위화. 가장 적은 노력으로 가장 큰 품질 향상을 주는 단계.</p>
+        <p class="section-desc">Post-retrieval re-ranking. The stage that delivers the biggest quality improvement with the least effort.</p>
       </div>
     </div>
 
@@ -711,11 +704,11 @@
         <thead>
           <tr>
             <th>Model</th>
-            <th>방식</th>
-            <th>레이턴시</th>
+            <th>Type</th>
+            <th>Latency</th>
             <th>NDCG@10</th>
-            <th>비용</th>
-            <th>특징</th>
+            <th>Cost</th>
+            <th>Features</th>
           </tr>
         </thead>
         <tbody>
@@ -725,7 +718,7 @@
             <td>~80ms</td>
             <td class="score high">●●●●</td>
             <td>$2/1K req</td>
-            <td>API, 다국어, 프로덕션 검증</td>
+            <td>API, multilingual, production-proven</td>
           </tr>
           <tr>
             <td><code>bge-reranker-v2-m3</code></td>
@@ -733,7 +726,7 @@
             <td>~60ms</td>
             <td class="score high">●●●●</td>
             <td>Self-host</td>
-            <td>오픈소스, 다국어, GPU 필요</td>
+            <td>Open-source, multilingual, GPU required</td>
           </tr>
           <tr>
             <td><code>Jina-reranker-v2</code></td>
@@ -741,7 +734,7 @@
             <td>~50ms</td>
             <td class="score mid">●●●○</td>
             <td>API/$0.02</td>
-            <td>경량, 다국어</td>
+            <td>Lightweight, multilingual</td>
           </tr>
           <tr>
             <td><code>FlashRank</code></td>
@@ -749,15 +742,15 @@
             <td>~15ms</td>
             <td class="score mid">●●●○</td>
             <td>Free/Self</td>
-            <td>초경량, CPU 구동, 빠른 추론</td>
+            <td>Ultra-lightweight, CPU inference, fast</td>
           </tr>
           <tr>
             <td><code>RankGPT / LLM Reranker</code></td>
             <td>LLM Listwise</td>
             <td>~500ms+</td>
             <td class="score high">●●●●</td>
-            <td>LLM API 비용</td>
-            <td>최고 정확도, 높은 비용/레이턴시</td>
+            <td>LLM API cost</td>
+            <td>Highest accuracy, high cost/latency</td>
           </tr>
         </tbody>
       </table>
@@ -765,12 +758,12 @@
 
     <div class="tips-row reveal">
       <div class="tip">
-        <div class="tip-title">💡 2단계 파이프라인</div>
-        <p><code>Top-100 (벡터검색)</code> → <code>Top-20 (BM25 필터)</code> → <code>Top-5 (Reranker)</code>. 넓게 검색하고 점점 좁히기.</p>
+        <div class="tip-title">💡 Two-Stage Pipeline</div>
+        <p><code>Top-100 (vector search)</code> → <code>Top-20 (BM25 filter)</code> → <code>Top-5 (Reranker)</code>. Search broadly, then progressively narrow down.</p>
       </div>
       <div class="tip">
-        <div class="tip-title">💡 비용 절약 패턴</div>
-        <p>FlashRank로 Top-100→Top-20, Cohere로 Top-20→Top-5. 2단계 리랭킹으로 비용/정확도 최적화.</p>
+        <div class="tip-title">💡 Cost-Saving Pattern</div>
+        <p>FlashRank for Top-100→Top-20, Cohere for Top-20→Top-5. Two-stage reranking optimizes cost/accuracy.</p>
       </div>
     </div>
   </div>
@@ -783,30 +776,30 @@
       <span class="section-num">06</span>
       <div>
         <h2>Generation & Prompting</h2>
-        <p class="section-desc">검색된 컨텍스트를 LLM에 효과적으로 전달하고, 충실한 응답을 생성하는 전략.</p>
+        <p class="section-desc">Strategies for effectively passing retrieved context to the LLM and generating faithful responses.</p>
       </div>
     </div>
 
     <div class="pattern-grid reveal">
       <div class="pattern-card">
         <h4>Citation Prompting</h4>
-        <p>응답의 각 주장에 <strong>[1], [2]</strong> 형식 출처 표기를 강제. 할루시네이션 감소 + 검증 가능성 확보.</p>
-        <div class="when-use">사내 QA, 고객 응대 등 신뢰성이 중요한 모든 곳.</div>
+        <p>Force source attribution in <strong>[1], [2]</strong> format for each claim in the response. Reduces hallucination + enables verification.</p>
+        <div class="when-use">Internal QA, customer support — anywhere trustworthiness matters.</div>
       </div>
       <div class="pattern-card">
-        <h4>Lost-in-the-Middle 대응</h4>
-        <p>LLM은 컨텍스트 <strong>처음과 끝을 잘 기억</strong>하고 중간은 잘 못 봄. 가장 관련 높은 문서를 맨 앞에 배치.</p>
-        <div class="when-use">컨텍스트가 길 때 (5개+ 문서). 순서 최적화 필수.</div>
+        <h4>Lost-in-the-Middle Mitigation</h4>
+        <p>LLMs <strong>remember the beginning and end</strong> of context well but struggle with the middle. Place the most relevant documents first.</p>
+        <div class="when-use">When context is long (5+ documents). Ordering optimization is essential.</div>
       </div>
       <div class="pattern-card">
         <h4>Context Compression</h4>
-        <p>검색된 문서를 그대로 넣지 말고 <strong>관련 문장만 추출</strong>. 토큰 절약 + 노이즈 감소.</p>
-        <div class="when-use">컨텍스트 윈도우 제한, 비용 최적화 시. LongLLMLingua 등.</div>
+        <p>Don't feed retrieved documents as-is — <strong>extract only relevant sentences</strong>. Saves tokens + reduces noise.</p>
+        <div class="when-use">Context window limitations, cost optimization. LongLLMLingua, etc.</div>
       </div>
       <div class="pattern-card">
         <h4>Chain-of-Note (CoN)</h4>
-        <p>검색된 각 문서에 대해 <strong>"이 문서가 질문에 관련 있는가?"를 메모</strong>한 뒤 종합. 노이즈 문서 필터링.</p>
-        <div class="when-use">검색 품질이 불안정할 때. Noisy Retrieval 상황.</div>
+        <p>For each retrieved document, <strong>note whether it's relevant to the question</strong>, then synthesize. Filters out noisy documents.</p>
+        <div class="when-use">When retrieval quality is unstable. Noisy retrieval scenarios.</div>
       </div>
     </div>
   </div>
@@ -819,7 +812,7 @@
       <span class="section-num">07</span>
       <div>
         <h2>Agentic RAG Patterns</h2>
-        <p class="section-desc">단순 파이프라인을 넘어 자율적으로 검색-판단-반복하는 에이전트 패턴.</p>
+        <p class="section-desc">Beyond simple pipelines — agent patterns that autonomously retrieve, judge, and iterate.</p>
       </div>
     </div>
 
@@ -827,25 +820,25 @@
     <div class="technique-deep reveal">
       <div class="deep-header">
         <h4>Self-RAG <span class="badge">Asai et al., ICLR 2024 Oral</span></h4>
-        <span class="impact">LLM 자체가 검색 필요 여부를 판단</span>
+        <span class="impact">The LLM itself decides whether retrieval is needed</span>
       </div>
-      <p>4가지 Reflection Token으로 자기 판단:</p>
+      <p>Self-judgment via 4 Reflection Tokens:</p>
       <div class="token-grid">
         <div class="token-item">
           <code>[Retrieve]</code>
-          <span>검색이 필요한가? Yes/No/Continue</span>
+          <span>Is retrieval needed? Yes/No/Continue</span>
         </div>
         <div class="token-item">
           <code>[IsRel]</code>
-          <span>검색된 문서가 관련 있는가? Relevant/Irrelevant</span>
+          <span>Is the retrieved document relevant? Relevant/Irrelevant</span>
         </div>
         <div class="token-item">
           <code>[IsSup]</code>
-          <span>응답이 문서에 근거하는가? Fully/Partially/No</span>
+          <span>Is the response grounded in the document? Fully/Partially/No</span>
         </div>
         <div class="token-item">
           <code>[IsUse]</code>
-          <span>최종 응답이 유용한가? 1~5 등급</span>
+          <span>Is the final response useful? Rating 1-5</span>
         </div>
       </div>
     </div>
@@ -854,18 +847,18 @@
     <div class="technique-deep reveal">
       <div class="deep-header">
         <h4>Corrective RAG (CRAG) <span class="badge">Yan et al., 2024</span></h4>
-        <span class="impact">정확도 19~37% 향상</span>
+        <span class="impact">19-37% accuracy improvement</span>
       </div>
-      <p>검색 결과를 경량 평가기로 <strong>Correct / Incorrect / Ambiguous</strong> 분류 후 보정 경로 선택:</p>
+      <p>A lightweight evaluator classifies retrieval results as <strong>Correct / Incorrect / Ambiguous</strong>, then selects a correction path:</p>
       <div class="crag-paths">
         <div class="crag-path correct">
-          <strong>Correct →</strong> Knowledge Refinement (관련 부분만 추출) → 생성
+          <strong>Correct →</strong> Knowledge Refinement (extract relevant parts only) → Generate
         </div>
         <div class="crag-path incorrect">
-          <strong>Incorrect →</strong> Web Search로 대체 → 생성
+          <strong>Incorrect →</strong> Replace with Web Search → Generate
         </div>
         <div class="crag-path ambiguous">
-          <strong>Ambiguous →</strong> 내부 문서 + Web Search 결합 → 생성
+          <strong>Ambiguous →</strong> Combine internal docs + Web Search → Generate
         </div>
       </div>
     </div>
@@ -874,59 +867,59 @@
     <div class="technique-deep reveal">
       <div class="deep-header">
         <h4>Adaptive RAG <span class="badge">Jeong et al., 2024</span></h4>
-        <span class="impact">질문 복잡도 기반 동적 라우팅</span>
+        <span class="impact">Dynamic routing based on question complexity</span>
       </div>
-      <p>경량 분류기가 질문 복잡도를 판단해서 최적 전략을 선택합니다:</p>
+      <p>A lightweight classifier judges question complexity and selects the optimal strategy:</p>
       <div class="routing-table">
         <div class="route">
           <span class="route-level easy">A — Simple</span>
-          <span>"Python 버전 확인 방법?" → <strong>No Retrieval</strong> (LLM 직접 답변)</span>
+          <span>"How to check Python version?" → <strong>No Retrieval</strong> (LLM direct answer)</span>
         </div>
         <div class="route">
           <span class="route-level medium">B — Moderate</span>
-          <span>"우리 회사 휴가 정책?" → <strong>Single-step RAG</strong></span>
+          <span>"What's our company leave policy?" → <strong>Single-step RAG</strong></span>
         </div>
         <div class="route">
           <span class="route-level hard">C — Complex</span>
-          <span>"3Q 매출을 경쟁사 대비 분석해줘" → <strong>Multi-step Agentic RAG</strong></span>
+          <span>"Analyze Q3 revenue vs competitors" → <strong>Multi-step Agentic RAG</strong></span>
         </div>
       </div>
     </div>
 
-    <!-- 2025~2026 신규 패턴 -->
-    <h3 class="sub-title reveal">2025~2026 신규 패턴</h3>
+    <!-- 2025~2026 New Patterns -->
+    <h3 class="sub-title reveal">2025~2026 Emerging Patterns</h3>
 
     <div class="technique-deep reveal">
       <div class="deep-header">
         <h4>RAFT (Retrieval Augmented Fine-Tuning) <span class="badge">UC Berkeley, 2024</span></h4>
-        <span class="impact">RAG + Fine-tuning 결합</span>
+        <span class="impact">RAG + Fine-tuning combined</span>
       </div>
-      <p>RAG와 파인튜닝을 결합하는 학습 레시피. 훈련 시 <strong>관련 문서 + 방해 문서(Distractor)</strong>를 함께 주고, 모델이 방해 문서를 무시하도록 학습합니다. 의료·법률 등 전문 도메인에서 단순 RAG보다 높은 정확도. 도메인 데이터가 충분할 때 고려.</p>
+      <p>A training recipe that combines RAG with fine-tuning. During training, the model is given <strong>relevant documents + distractor documents</strong> together, and learns to ignore the distractors. Achieves higher accuracy than vanilla RAG in specialized domains like medical and legal. Consider when sufficient domain data is available.</p>
     </div>
 
     <div class="technique-deep reveal">
       <div class="deep-header">
         <h4>SimRAG (Self-Improving RAG) <span class="badge">NAACL 2025</span></h4>
-        <span class="impact">도메인 적응 1.2~8.6% 향상</span>
+        <span class="impact">1.2-8.6% domain adaptation improvement</span>
       </div>
-      <p>비라벨 코퍼스에서 LLM이 <strong>자체적으로 QA 쌍을 생성</strong>하고, 품질 필터링 후 self-training. 라벨링 비용 없이 도메인 특화 RAG 성능을 올리는 방법. 11개 데이터셋, 3개 도메인에서 검증.</p>
+      <p>The LLM <strong>self-generates QA pairs</strong> from an unlabeled corpus, applies quality filtering, then self-trains. Improves domain-specific RAG performance without labeling costs. Validated across 11 datasets and 3 domains.</p>
     </div>
 
     <div class="technique-deep reveal">
       <div class="deep-header">
-        <h4>Context Engineering <span class="badge">2025~2026 패러다임 전환</span></h4>
-        <span class="impact">RAG → 더 넓은 프레임워크로 진화</span>
+        <h4>Context Engineering <span class="badge">2025~2026 Paradigm Shift</span></h4>
+        <span class="impact">RAG → Evolving into a broader framework</span>
       </div>
-      <p>"RAG"라는 좁은 패턴을 넘어, LLM에 전달하는 <strong>전체 컨텍스트를 체계적으로 설계</strong>하는 엔지니어링 분야. RAG(정적 지식 검색) + Memory(동적 대화 이력) + MCP(도구/서비스 연결)를 통합하는 "Knowledge Runtime" 개념으로 확장.</p>
+      <p>Moving beyond the narrow "RAG" pattern to systematically <strong>engineering the entire context delivered to the LLM</strong>. Expanding into a "Knowledge Runtime" concept that integrates RAG (static knowledge retrieval) + Memory (dynamic conversation history) + MCP (tool/service connections).</p>
       <div class="crag-paths">
         <div class="crag-path correct">
-          <strong>RAG</strong> — 정적 도메인 지식 검색 (문서, DB)
+          <strong>RAG</strong> — Static domain knowledge retrieval (documents, DB)
         </div>
         <div class="crag-path ambiguous">
-          <strong>Memory</strong> — 동적 상호작용 데이터 (대화 이력, 세션 상태)
+          <strong>Memory</strong> — Dynamic interaction data (conversation history, session state)
         </div>
         <div class="crag-path incorrect" style="border-left-color:var(--purple);background:rgba(167,139,250,.06);">
-          <strong style="color:var(--purple);">MCP</strong> — 외부 도구/서비스 연결 (API, DB, 파일 시스템)
+          <strong style="color:var(--purple);">MCP</strong> — External tool/service connections (API, DB, filesystem)
         </div>
       </div>
     </div>
@@ -934,9 +927,9 @@
     <div class="technique-deep reveal">
       <div class="deep-header">
         <h4>MCP + Agentic RAG <span class="badge">Anthropic, 2025~2026</span></h4>
-        <span class="impact">표준화된 도구 연결 프로토콜</span>
+        <span class="impact">Standardized tool connection protocol</span>
       </div>
-      <p><strong>Model Context Protocol (MCP)</strong>은 AI 모델과 외부 데이터/도구를 연결하는 오픈 표준. 기존에는 도구마다 커스텀 코드가 필요했지만, MCP로 벡터 DB · SQL DB · 웹 검색 · API를 통합 인터페이스로 연결합니다. Agentic RAG의 도구 선택이 동적이고 확장 가능해집니다.</p>
+      <p><strong>Model Context Protocol (MCP)</strong> is an open standard for connecting AI models to external data/tools. Previously, each tool required custom code, but MCP provides a unified interface for vector DBs, SQL DBs, web search, and APIs. Makes Agentic RAG's tool selection dynamic and extensible.</p>
     </div>
   </div>
 </section>
@@ -948,67 +941,67 @@
       <span class="section-num">08</span>
       <div>
         <h2>Evaluation Framework</h2>
-        <p class="section-desc">측정 없이 개선 없음. 검색과 생성을 분리 평가하고, 프로덕션에서 지속 모니터링.</p>
+        <p class="section-desc">No measurement, no improvement. Evaluate retrieval and generation separately, and continuously monitor in production.</p>
       </div>
     </div>
 
-    <!-- 메트릭 2x2 그리드 -->
-    <h3 class="sub-title reveal">핵심 메트릭 매트릭스</h3>
+    <!-- Metrics 2x2 Grid -->
+    <h3 class="sub-title reveal">Core Metrics Matrix</h3>
     <div class="eval-matrix reveal">
       <div class="eval-quadrant">
-        <div class="quad-header retrieval-header">검색 품질 (Retrieval)</div>
+        <div class="quad-header retrieval-header">Retrieval Quality</div>
         <div class="eval-metric">
           <strong>Context Precision</strong>
-          <p>검색된 문서 중 관련 있는 비율. <code>관련 문서 / 전체 검색 문서</code></p>
+          <p>Ratio of relevant documents among retrieved ones. <code>Relevant docs / Total retrieved docs</code></p>
         </div>
         <div class="eval-metric">
           <strong>Context Recall</strong>
-          <p>필요한 정보가 검색에 포함된 비율. <code>검색된 관련 문서 / 전체 관련 문서</code></p>
+          <p>Ratio of needed information included in retrieval. <code>Retrieved relevant docs / Total relevant docs</code></p>
         </div>
         <div class="eval-metric">
           <strong>MRR (Mean Reciprocal Rank)</strong>
-          <p>첫 번째 관련 문서의 평균 순위. 검색 순서 품질 측정.</p>
+          <p>Average rank of the first relevant document. Measures retrieval ordering quality.</p>
         </div>
       </div>
       <div class="eval-quadrant">
-        <div class="quad-header generation-header">생성 품질 (Generation)</div>
+        <div class="quad-header generation-header">Generation Quality</div>
         <div class="eval-metric">
           <strong>Faithfulness</strong>
-          <p>응답이 검색 문서에 <strong>충실한가</strong>. 지어낸 내용 비율 측정. <em>가장 중요한 메트릭.</em></p>
+          <p>Is the response <strong>faithful</strong> to the retrieved documents? Measures fabricated content ratio. <em>The most important metric.</em></p>
         </div>
         <div class="eval-metric">
           <strong>Answer Relevancy</strong>
-          <p>응답이 질문에 <strong>적절한가</strong>. 관련 없는 내용이 포함되지 않았는지.</p>
+          <p>Is the response <strong>appropriate</strong> to the question? Checks for irrelevant content.</p>
         </div>
         <div class="eval-metric">
           <strong>Answer Correctness</strong>
-          <p>정답과 비교한 <strong>사실적 정확도</strong>. Ground truth 필요.</p>
+          <p><strong>Factual accuracy</strong> compared to ground truth. Requires ground truth data.</p>
         </div>
       </div>
     </div>
 
-    <!-- 평가 도구 -->
-    <h3 class="sub-title reveal">평가 도구 스택</h3>
+    <!-- Evaluation Tools -->
+    <h3 class="sub-title reveal">Evaluation Tool Stack</h3>
     <div class="tool-stack reveal">
       <div class="tool-item">
         <h4>RAGAS</h4>
-        <span class="tool-tag">개발 단계</span>
-        <p>오픈소스 자동 평가. 별도 ground truth 없이 LLM 기반 평가 가능. CI/CD 통합 가능.</p>
+        <span class="tool-tag">Development</span>
+        <p>Open-source automated evaluation. LLM-based evaluation without separate ground truth. CI/CD integration ready.</p>
       </div>
       <div class="tool-item">
         <h4>DeepEval</h4>
         <span class="tool-tag">CI/CD</span>
-        <p>pytest 스타일 RAG 유닛 테스트. <code>assert_test</code>로 회귀 방지. 빌드 파이프라인 통합.</p>
+        <p>Pytest-style RAG unit tests. Prevent regressions with <code>assert_test</code>. Build pipeline integration.</p>
       </div>
       <div class="tool-item">
         <h4>LLM-as-Judge</h4>
-        <span class="tool-tag">유연한 평가</span>
-        <p>강력한 LLM으로 약한 LLM의 출력을 평가. Pairwise 비교, Pointwise 채점, Reference-based.</p>
+        <span class="tool-tag">Flexible Evaluation</span>
+        <p>A stronger LLM evaluates a weaker LLM's output. Pairwise comparison, pointwise scoring, reference-based.</p>
       </div>
       <div class="tool-item">
         <h4>TruLens / Langfuse</h4>
-        <span class="tool-tag">프로덕션 모니터링</span>
-        <p>실시간 트레이싱, 피드백 함수 기반 품질 추적. 사용자 피드백 루프 구축.</p>
+        <span class="tool-tag">Production Monitoring</span>
+        <p>Real-time tracing, feedback function-based quality tracking. Build user feedback loops.</p>
       </div>
     </div>
   </div>
@@ -1021,48 +1014,48 @@
       <span class="section-num">09</span>
       <div>
         <h2>Production Operations</h2>
-        <p class="section-desc">RAG를 프로덕션에서 안정적으로 운영하기 위한 실전 체크리스트.</p>
+        <p class="section-desc">A practical checklist for running RAG reliably in production.</p>
       </div>
     </div>
 
-    <!-- 레이턴시 예산 -->
-    <h3 class="sub-title reveal">레이턴시 예산 (Latency Budget)</h3>
+    <!-- Latency Budget -->
+    <h3 class="sub-title reveal">Latency Budget</h3>
     <div class="latency-budget reveal">
       <div class="budget-row header-row">
-        <span>단계</span>
-        <span>P50 목표</span>
-        <span>P99 목표</span>
-        <span>최적화 방법</span>
+        <span>Stage</span>
+        <span>P50 Target</span>
+        <span>P99 Target</span>
+        <span>Optimization Method</span>
       </div>
       <div class="budget-row">
         <span>Query Processing</span>
         <span>50ms</span>
         <span>150ms</span>
-        <span>경량 모델, 캐싱</span>
+        <span>Lightweight models, caching</span>
       </div>
       <div class="budget-row">
         <span>Embedding</span>
         <span>20ms</span>
         <span>50ms</span>
-        <span>배치 처리, GPU</span>
+        <span>Batch processing, GPU</span>
       </div>
       <div class="budget-row">
         <span>Vector Search</span>
         <span>10ms</span>
         <span>30ms</span>
-        <span>HNSW, 인메모리 인덱스</span>
+        <span>HNSW, in-memory index</span>
       </div>
       <div class="budget-row">
         <span>Reranker</span>
         <span>60ms</span>
         <span>120ms</span>
-        <span>FlashRank 또는 캐싱</span>
+        <span>FlashRank or caching</span>
       </div>
       <div class="budget-row">
         <span>LLM Generation</span>
         <span>500ms</span>
         <span>2000ms</span>
-        <span>스트리밍, 프롬프트 최적화</span>
+        <span>Streaming, prompt optimization</span>
       </div>
       <div class="budget-row total-row">
         <span><strong>Total (E2E)</strong></span>
@@ -1072,57 +1065,57 @@
       </div>
     </div>
 
-    <!-- 비용 최적화 -->
-    <h3 class="sub-title reveal">비용 최적화 전략</h3>
+    <!-- Cost Optimization -->
+    <h3 class="sub-title reveal">Cost Optimization Strategies</h3>
     <div class="tips-row reveal">
       <div class="tip">
         <div class="tip-title">🔄 Semantic Cache</div>
-        <p>유사 질문 임베딩 비교 → 캐시 히트 시 검색/LLM 스킵. <strong>20~40% 비용 절감</strong>. Redis + 코사인 유사도 > 0.95.</p>
+        <p>Compare similar query embeddings → skip retrieval/LLM on cache hit. <strong>20-40% cost reduction</strong>. Redis + cosine similarity > 0.95.</p>
       </div>
       <div class="tip">
         <div class="tip-title">📐 Matryoshka Embedding</div>
-        <p>3072d → 256d로 차원 축소. 스토리지 12x 절약, 검색 속도 3x 향상. 정확도 5%만 감소.</p>
+        <p>Reduce dimensions from 3072d → 256d. 12x storage savings, 3x faster search. Only 5% accuracy loss.</p>
       </div>
       <div class="tip">
-        <div class="tip-title">🎯 Router로 분기</div>
-        <p>단순 질문은 검색 없이 LLM 직접 답변. <strong>30~50% 검색 비용 절감</strong>. 경량 분류기로 구현.</p>
+        <div class="tip-title">🎯 Router Branching</div>
+        <p>Simple questions get direct LLM answers without retrieval. <strong>30-50% retrieval cost savings</strong>. Implement with a lightweight classifier.</p>
       </div>
       <div class="tip">
         <div class="tip-title">📦 Prompt Compression</div>
-        <p>컨텍스트를 LLMLingua로 압축. 토큰 50~70% 절약. LLM API 비용 직접 절감.</p>
+        <p>Compress context with LLMLingua. Save 50-70% tokens. Direct LLM API cost reduction.</p>
       </div>
     </div>
 
-    <!-- 체크리스트 -->
-    <h3 class="sub-title reveal">프로덕션 체크리스트</h3>
+    <!-- Checklist -->
+    <h3 class="sub-title reveal">Production Checklist</h3>
     <div class="checklist reveal">
       <div class="check-group">
-        <h4>🔍 검색 품질</h4>
-        <div class="check-item">☐ 자체 데이터셋 벤치마크 (최소 100+ QA 쌍)</div>
-        <div class="check-item">☐ Hybrid search (Dense + BM25) 적용</div>
-        <div class="check-item">☐ Reranker 도입 및 A/B 테스트</div>
-        <div class="check-item">☐ 청킹 전략 비교 실험 완료</div>
+        <h4>🔍 Retrieval Quality</h4>
+        <div class="check-item">☐ Benchmark on own dataset (100+ QA pairs minimum)</div>
+        <div class="check-item">☐ Hybrid search (Dense + BM25) implemented</div>
+        <div class="check-item">☐ Reranker deployed and A/B tested</div>
+        <div class="check-item">☐ Chunking strategy comparison experiments completed</div>
       </div>
       <div class="check-group">
-        <h4>🛡️ 안전성</h4>
-        <div class="check-item">☐ 할루시네이션 감지 파이프라인</div>
-        <div class="check-item">☐ PII 필터링 (개인정보 마스킹)</div>
-        <div class="check-item">☐ 출처 표기 강제 (Citation)</div>
-        <div class="check-item">☐ Fallback 응답 ("모르겠습니다" 허용)</div>
+        <h4>🛡️ Safety</h4>
+        <div class="check-item">☐ Hallucination detection pipeline</div>
+        <div class="check-item">☐ PII filtering (personal data masking)</div>
+        <div class="check-item">☐ Forced citation (source attribution)</div>
+        <div class="check-item">☐ Fallback responses ("I don't know" allowed)</div>
       </div>
       <div class="check-group">
-        <h4>📊 모니터링</h4>
-        <div class="check-item">☐ 레이턴시 대시보드 (P50/P95/P99)</div>
-        <div class="check-item">☐ Faithfulness 자동 평가 (RAGAS)</div>
-        <div class="check-item">☐ 사용자 피드백 수집 (👍👎)</div>
-        <div class="check-item">☐ 비용 추적 (per-query 단가)</div>
+        <h4>📊 Monitoring</h4>
+        <div class="check-item">☐ Latency dashboard (P50/P95/P99)</div>
+        <div class="check-item">☐ Automated faithfulness evaluation (RAGAS)</div>
+        <div class="check-item">☐ User feedback collection (thumbs up/down)</div>
+        <div class="check-item">☐ Cost tracking (per-query cost)</div>
       </div>
       <div class="check-group">
-        <h4>🔄 운영</h4>
-        <div class="check-item">☐ 문서 업데이트 자동화 파이프라인</div>
-        <div class="check-item">☐ 인덱스 갱신 전략 (incremental)</div>
-        <div class="check-item">☐ 임베딩 모델 교체 마이그레이션 계획</div>
-        <div class="check-item">☐ 장애 시 graceful degradation</div>
+        <h4>🔄 Operations</h4>
+        <div class="check-item">☐ Automated document update pipeline</div>
+        <div class="check-item">☐ Index refresh strategy (incremental)</div>
+        <div class="check-item">☐ Embedding model migration plan</div>
+        <div class="check-item">☐ Graceful degradation on failure</div>
       </div>
     </div>
   </div>
@@ -1133,10 +1126,10 @@
   <div class="container">
     <p class="footer-text">RAG Engineering Guide — Production-Grade Reference</p>
     <p class="footer-sub">Based on research papers, production benchmarks, and engineering best practices (2024~2025)</p>
-    <a href="../" class="footer-link">← RAG 입문 가이드로 돌아가기</a>
+    <a href="../" class="footer-link">&larr; Back to Intro Guide</a>
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script src="../../expert/script.js"></script>
 </body>
 </html>

@@ -2135,6 +2135,62 @@ code {
   }
 }
 
+/* ====== LANG SWITCH ====== */
+.lang-switch {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-left: 12px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.lang-switch:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-purple);
+  background: rgba(99,102,241,0.1);
+}
+
+/* ====== LANG TOGGLE ====== */
+.lang-toggle {
+  display: flex;
+  gap: 2px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 2px;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.lang-btn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang-btn.active {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.lang-btn:hover:not(.active) {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.05);
+}
+
 /* ====== SCROLLBAR ====== */
 ::-webkit-scrollbar {
   width: 8px;

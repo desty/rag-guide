@@ -1,17 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RAG 완전 가이드 — Retrieval-Augmented Generation</title>
-  <link rel="alternate" hreflang="en" href="en/" />
-  <link rel="alternate" hreflang="ko" href="./" />
-  <link rel="canonical" href="https://desty.github.io/rag-guide/" />
-  <meta name="description" content="RAG(Retrieval-Augmented Generation) 완전 가이드. LLM의 한계를 검색으로 보강하는 기술의 개념, 진화, 실전 적용을 다룹니다.">
-  <meta property="og:title" content="RAG 완전 가이드 — Retrieval-Augmented Generation">
-  <meta property="og:description" content="Naive RAG에서 Agentic RAG까지. 아키텍처 다이어그램, 최신 논문, 실전 가이드.">
-  <meta property="og:type" content="article">
-  <link rel="stylesheet" href="styles.css">
+  <title>The Complete RAG Guide — Retrieval-Augmented Generation</title>
+  <link rel="stylesheet" href="../styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
@@ -21,20 +14,20 @@
 <nav class="nav" id="nav">
   <div class="nav-inner">
     <a href="#hero" class="nav-logo">RAG<span class="accent">Guide</span></a>
-    <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="#what-is-rag">개념</a></li>
+      <li><a href="#what-is-rag">Concept</a></li>
       <li><a href="#naive-rag">Naive</a></li>
       <li><a href="#advanced-rag">Advanced</a></li>
       <li><a href="#modular-rag">Modular</a></li>
       <li><a href="#agentic-rag">Agentic</a></li>
-      <li><a href="#evaluation">평가</a></li>
-      <li><a href="#best-practices">실전</a></li>
-      <li><a href="#papers">논문</a></li>
+      <li><a href="#evaluation">Evaluation</a></li>
+      <li><a href="#best-practices">Practice</a></li>
+      <li><a href="#papers">Papers</a></li>
     </ul>
-    <a href="en/" class="lang-switch" title="English">EN</a>
+    <a href="../" class="lang-switch" title="한국어">KO</a>
   </div>
 </nav>
 
@@ -44,33 +37,33 @@
   <div class="container hero-content">
     <div class="hero-badge">Retrieval-Augmented Generation</div>
     <h1 class="hero-title">
-      RAG<br><span class="gradient-text">완전 가이드</span>
+      RAG<br><span class="gradient-text">Complete Guide</span>
     </h1>
     <p class="hero-subtitle">
-      LLM이 <strong>오픈북 시험</strong>을 보게 하는 기술.<br>
-      검색으로 지식을 보강해서, 더 정확하고 신뢰할 수 있는 AI 응답을 만듭니다.
+      The technique that lets LLMs take an <strong>open-book exam</strong>.<br>
+      By augmenting knowledge through retrieval, it produces more accurate and trustworthy AI responses.
     </p>
     <div class="hero-stats">
       <div class="stat">
         <span class="stat-number">1,200+</span>
-        <span class="stat-label">2024년 RAG 논문 수</span>
+        <span class="stat-label">RAG papers published in 2024</span>
       </div>
       <div class="stat">
         <span class="stat-number">50%+</span>
-        <span class="stat-label">검색 최적화만으로 정확도 향상</span>
+        <span class="stat-label">Accuracy gain from retrieval optimization alone</span>
       </div>
       <div class="stat">
-        <span class="stat-number">3세대</span>
+        <span class="stat-number">3 Gens</span>
         <span class="stat-label">Naive → Advanced → Modular</span>
       </div>
     </div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
       <a href="#what-is-rag" class="hero-cta">
-        <span>시작하기</span>
+        <span>Get Started</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
       </a>
       <a href="expert/" class="hero-cta" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);box-shadow:none;">
-        <span>전문가 가이드 →</span>
+        <span>Expert Guide →</span>
       </a>
     </div>
   </div>
@@ -80,37 +73,37 @@
 <section class="section" id="why-rag">
   <div class="container">
     <div class="section-label">WHY RAG?</div>
-    <h2 class="section-title">왜 RAG가 필요한가?</h2>
-    <p class="section-desc">LLM은 강력하지만, 혼자서는 해결하기 어려운 근본적인 한계가 있습니다.</p>
+    <h2 class="section-title">Why Do We Need RAG?</h2>
+    <p class="section-desc">LLMs are powerful, but they have fundamental limitations that are hard to overcome on their own.</p>
 
     <div class="problem-cards">
       <div class="problem-card reveal">
         <div class="problem-icon">
           <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/><path d="M24 14v12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="34" r="2" fill="currentColor"/></svg>
         </div>
-        <h3>할루시네이션</h3>
-        <p>학습 데이터에 없는 내용도 <strong>그럴듯하게 지어냅니다</strong>. 사실 확인 없이 자신감 있게 틀린 답을 생성하는 것이 LLM의 가장 큰 약점입니다.</p>
+        <h3>Hallucination</h3>
+        <p>LLMs <strong>fabricate plausible-sounding answers</strong> even when the information is not in their training data. Confidently generating wrong answers without fact-checking is the biggest weakness of LLMs.</p>
       </div>
       <div class="problem-card reveal">
         <div class="problem-icon">
           <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" stroke-width="2"/><path d="M16 18h16M16 24h10M16 30h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="36" y1="8" x2="36" y2="40" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/></svg>
         </div>
-        <h3>지식 단절</h3>
-        <p>학습 데이터의 <strong>컷오프 날짜</strong> 이후의 정보를 모릅니다. 어제 나온 뉴스, 최신 API 변경사항, 실시간 데이터에 접근할 수 없습니다.</p>
+        <h3>Knowledge Cutoff</h3>
+        <p>LLMs don't know information after their training data <strong>cutoff date</strong>. They cannot access yesterday's news, latest API changes, or real-time data.</p>
       </div>
       <div class="problem-card reveal">
         <div class="problem-icon">
           <svg viewBox="0 0 48 48" fill="none"><path d="M24 6l4 8 9 1-7 6 2 9-8-4-8 4 2-9-7-6 9-1z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 38h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18 42h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
-        <h3>도메인 지식 부족</h3>
-        <p>회사 내부 문서, 의료/법률 전문 지식 등 <strong>비공개 데이터</strong>에 대해서는 답변할 수 없습니다. 파인튜닝은 비용과 시간이 큽니다.</p>
+        <h3>Lack of Domain Knowledge</h3>
+        <p>LLMs cannot answer questions about <strong>private data</strong> such as internal company documents or specialized medical/legal knowledge. Fine-tuning is costly and time-consuming.</p>
       </div>
       <div class="problem-card reveal">
         <div class="problem-icon">
           <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="2"/><path d="M24 14v10l7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
         </div>
-        <h3>출처 불투명</h3>
-        <p>답변의 <strong>근거를 제시하지 못합니다</strong>. "어디서 이 정보를 가져왔나요?"에 답할 수 없어서, 신뢰성 검증이 어렵습니다.</p>
+        <h3>Opaque Sources</h3>
+        <p>LLMs <strong>cannot cite their sources</strong>. They can't answer "Where did you get this information?", making it difficult to verify trustworthiness.</p>
       </div>
     </div>
 
@@ -119,8 +112,8 @@
         <svg viewBox="0 0 48 48" fill="none"><path d="M24 4l6 12 13 2-9 9 2 13-12-6-12 6 2-13-9-9 13-2z" fill="url(#starGrad)"/><defs><linearGradient id="starGrad" x1="4" y1="4" x2="44" y2="44"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6366f1"/></linearGradient></defs></svg>
       </div>
       <div class="solution-text">
-        <h3>RAG = 이 모든 문제의 해결책</h3>
-        <p>외부 지식을 <strong>실시간으로 검색</strong>해서 LLM에 전달하면 — 할루시네이션이 줄고, 최신 정보를 반영하며, 출처까지 제공할 수 있습니다.</p>
+        <h3>RAG = The Solution to All These Problems</h3>
+        <p>By <strong>retrieving external knowledge in real time</strong> and feeding it to the LLM, hallucinations decrease, the latest information is reflected, and sources can be provided.</p>
       </div>
     </div>
   </div>
@@ -130,35 +123,35 @@
 <section class="section section-dark" id="what-is-rag">
   <div class="container">
     <div class="section-label">CONCEPT</div>
-    <h2 class="section-title">RAG란 무엇인가?</h2>
+    <h2 class="section-title">What is RAG?</h2>
     <p class="section-desc">
-      <strong>Retrieval-Augmented Generation</strong> — "검색으로 보강된 생성".<br>
-      LLM이 답변을 만들기 전에 관련 문서를 검색해서 참고하는 방식입니다.
+      <strong>Retrieval-Augmented Generation</strong> — generation augmented by retrieval.<br>
+      Before generating an answer, the LLM retrieves relevant documents and uses them as reference.
     </p>
 
-    <!-- 핵심 비유 -->
+    <!-- Core Analogy -->
     <div class="analogy-box reveal">
       <div class="analogy-left">
         <div class="analogy-emoji">📝</div>
-        <h4>일반 LLM</h4>
-        <p>클로즈드북 시험<br><span class="muted">머릿속 기억에만 의존</span></p>
+        <h4>Standard LLM</h4>
+        <p>Closed-book exam<br><span class="muted">Relies only on memorized knowledge</span></p>
       </div>
       <div class="analogy-vs">VS</div>
       <div class="analogy-right">
         <div class="analogy-emoji">📖</div>
         <h4>RAG</h4>
-        <p>오픈북 시험<br><span class="muted">참고 자료를 보면서 답변</span></p>
+        <p>Open-book exam<br><span class="muted">Answers while consulting reference materials</span></p>
       </div>
     </div>
 
-    <!-- 핵심 파이프라인 다이어그램 -->
+    <!-- Core Pipeline Diagram -->
     <div class="pipeline-section reveal">
-      <h3 class="subsection-title">핵심 파이프라인</h3>
+      <h3 class="subsection-title">Core Pipeline</h3>
       <div class="pipeline">
         <div class="pipeline-step">
           <div class="step-icon query-icon">Q</div>
           <div class="step-label">Query</div>
-          <div class="step-desc">사용자 질문</div>
+          <div class="step-desc">User question</div>
         </div>
         <div class="pipeline-arrow">
           <svg viewBox="0 0 40 24"><path d="M0 12h32M24 4l8 8-8 8" stroke="currentColor" stroke-width="2" fill="none"/></svg>
@@ -168,7 +161,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
           </div>
           <div class="step-label">Retrieve</div>
-          <div class="step-desc">관련 문서 검색</div>
+          <div class="step-desc">Search relevant documents</div>
         </div>
         <div class="pipeline-arrow">
           <svg viewBox="0 0 40 24"><path d="M0 12h32M24 4l8 8-8 8" stroke="currentColor" stroke-width="2" fill="none"/></svg>
@@ -178,7 +171,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
           </div>
           <div class="step-label">Augment</div>
-          <div class="step-desc">프롬프트에 삽입</div>
+          <div class="step-desc">Insert into prompt</div>
         </div>
         <div class="pipeline-arrow">
           <svg viewBox="0 0 40 24"><path d="M0 12h32M24 4l8 8-8 8" stroke="currentColor" stroke-width="2" fill="none"/></svg>
@@ -188,39 +181,39 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12l9 9 9-9"/></svg>
           </div>
           <div class="step-label">Generate</div>
-          <div class="step-desc">LLM 응답 생성</div>
+          <div class="step-desc">LLM generates response</div>
         </div>
       </div>
     </div>
 
-    <!-- 핵심 개념 3개 -->
+    <!-- 3 Core Concepts -->
     <div class="concept-grid reveal">
       <div class="concept-card">
         <div class="concept-number">01</div>
-        <h4>임베딩 (Embedding)</h4>
-        <p>텍스트를 <strong>숫자 벡터</strong>로 변환하는 것. "고양이"와 "cat"은 의미가 비슷하므로 벡터 공간에서 가까이 위치합니다. 이를 통해 키워드가 아닌 <em>의미 기반 검색</em>이 가능해집니다.</p>
+        <h4>Embedding</h4>
+        <p>Converting text into <strong>numerical vectors</strong>. Since "cat" and "kitten" have similar meanings, they are positioned close together in vector space. This enables <em>semantic search</em> rather than keyword matching.</p>
         <div class="concept-visual embedding-visual">
-          <div class="vector-point" style="--x:20%;--y:30%;" data-label="고양이">
-            <span>고양이</span>
-          </div>
-          <div class="vector-point" style="--x:25%;--y:25%;" data-label="cat">
+          <div class="vector-point" style="--x:20%;--y:30%;" data-label="cat">
             <span>cat</span>
           </div>
-          <div class="vector-point" style="--x:70%;--y:60%;" data-label="자동차">
-            <span>자동차</span>
+          <div class="vector-point" style="--x:25%;--y:25%;" data-label="kitten">
+            <span>kitten</span>
           </div>
-          <div class="vector-point" style="--x:75%;--y:55%;" data-label="car">
+          <div class="vector-point" style="--x:70%;--y:60%;" data-label="car">
             <span>car</span>
           </div>
-          <div class="vector-point" style="--x:22%;--y:40%;" data-label="강아지">
-            <span>강아지</span>
+          <div class="vector-point" style="--x:75%;--y:55%;" data-label="vehicle">
+            <span>vehicle</span>
+          </div>
+          <div class="vector-point" style="--x:22%;--y:40%;" data-label="puppy">
+            <span>puppy</span>
           </div>
         </div>
       </div>
       <div class="concept-card">
         <div class="concept-number">02</div>
-        <h4>벡터 데이터베이스</h4>
-        <p>임베딩 벡터를 저장하고, <strong>유사도 검색</strong>을 빠르게 수행하는 특수 DB. 질문의 벡터와 가장 가까운 문서 벡터를 찾아 반환합니다.</p>
+        <h4>Vector Database</h4>
+        <p>A specialized DB that stores embedding vectors and performs fast <strong>similarity search</strong>. It finds and returns the document vectors closest to the query vector.</p>
         <div class="concept-visual db-visual">
           <div class="db-icon-large">
             <svg viewBox="0 0 64 64" fill="none">
@@ -235,15 +228,15 @@
       </div>
       <div class="concept-card">
         <div class="concept-number">03</div>
-        <h4>시맨틱 검색</h4>
-        <p>키워드 매칭이 아닌 <strong>의미의 유사성</strong>으로 검색. "연봉 인상 방법"으로 검색하면 "급여 협상 전략"도 찾을 수 있습니다. 코사인 유사도로 벡터 간 거리를 측정합니다.</p>
+        <h4>Semantic Search</h4>
+        <p>Searching by <strong>semantic similarity</strong> rather than keyword matching. Searching for "how to get a raise" can also find "salary negotiation strategies". Cosine similarity measures the distance between vectors.</p>
         <div class="concept-visual search-visual">
           <div class="search-demo">
-            <div class="search-query">"연봉 인상 방법"</div>
+            <div class="search-query">"how to get a raise"</div>
             <div class="search-results">
-              <div class="search-result match-high">급여 협상 전략 <span>0.92</span></div>
-              <div class="search-result match-mid">보상 체계 가이드 <span>0.85</span></div>
-              <div class="search-result match-low">회사 복리후생 <span>0.61</span></div>
+              <div class="search-result match-high">Salary negotiation strategies <span>0.92</span></div>
+              <div class="search-result match-mid">Compensation framework guide <span>0.85</span></div>
+              <div class="search-result match-low">Company benefits overview <span>0.61</span></div>
             </div>
           </div>
         </div>
@@ -251,9 +244,9 @@
     </div>
 
     <div class="paper-ref reveal">
-      <span class="paper-tag">원본 논문</span>
+      <span class="paper-tag">Original Paper</span>
       <strong>Lewis et al. (2020)</strong> — "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"
-      <p>RAG-Sequence와 RAG-Token 두 가지 변형을 제안. DPR(Dense Passage Retrieval)로 검색하고 BART로 생성. NeurIPS 2020에서 발표되어 RAG 연구의 시작점이 되었습니다.</p>
+      <p>Proposed two variants: RAG-Sequence and RAG-Token. Uses DPR (Dense Passage Retrieval) for retrieval and BART for generation. Presented at NeurIPS 2020, marking the starting point of RAG research.</p>
     </div>
   </div>
 </section>
@@ -262,8 +255,8 @@
 <section class="section" id="evolution">
   <div class="container">
     <div class="section-label">EVOLUTION</div>
-    <h2 class="section-title">RAG의 진화</h2>
-    <p class="section-desc">RAG는 3세대에 걸쳐 발전해 왔습니다. 각 세대가 이전의 한계를 어떻게 극복하는지 살펴봅니다.</p>
+    <h2 class="section-title">The Evolution of RAG</h2>
+    <p class="section-desc">RAG has evolved across three generations. Let's examine how each generation overcomes the limitations of its predecessor.</p>
 
     <div class="evolution-timeline reveal">
       <div class="evo-item evo-naive">
@@ -271,7 +264,7 @@
         <div class="evo-content">
           <div class="evo-year">2020~2022</div>
           <h3>Naive RAG</h3>
-          <p>고정된 파이프라인. Query → Retrieve → Generate. 단순하지만 한계가 명확합니다.</p>
+          <p>A fixed pipeline. Query → Retrieve → Generate. Simple but with clear limitations.</p>
           <code>Query → Retrieve → Generate</code>
         </div>
       </div>
@@ -280,8 +273,8 @@
         <div class="evo-content">
           <div class="evo-year">2023~2024</div>
           <h3>Advanced RAG</h3>
-          <p>검색 전/중/후를 최적화. 쿼리 리라이팅, 하이브리드 검색, 리랭킹 등을 추가합니다.</p>
-          <code>Query 최적화 → Hybrid Retrieve → Rerank → Generate</code>
+          <p>Optimizes pre/during/post retrieval. Adds query rewriting, hybrid search, reranking, and more.</p>
+          <code>Query Optimization → Hybrid Retrieve → Rerank → Generate</code>
         </div>
       </div>
       <div class="evo-item evo-modular">
@@ -289,8 +282,8 @@
         <div class="evo-content">
           <div class="evo-year">2024~</div>
           <h3>Modular RAG</h3>
-          <p>모듈 단위 조합. 라우터, 평가기, 반복 검색 등을 태스크에 맞게 동적으로 구성합니다.</p>
-          <code>Router → [동적 모듈 조합] → 자체 평가 → 반복/완료</code>
+          <p>Modular composition. Dynamically configures routers, evaluators, iterative retrieval, and more to match the task.</p>
+          <code>Router → [Dynamic Module Composition] → Self-Evaluation → Iterate/Complete</code>
         </div>
       </div>
     </div>
@@ -302,9 +295,9 @@
   <div class="container">
     <div class="section-label">STAGE 1</div>
     <h2 class="section-title">Naive RAG</h2>
-    <p class="section-desc">가장 기본적인 "Retrieve → Read" 파이프라인. RAG의 출발점이지만, 한계가 분명합니다.</p>
+    <p class="section-desc">The most basic "Retrieve → Read" pipeline. The starting point of RAG, but with clear limitations.</p>
 
-    <!-- Naive RAG 아키텍처 다이어그램 -->
+    <!-- Naive RAG Architecture Diagram -->
     <div class="arch-diagram reveal">
       <svg class="arch-svg" viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -329,13 +322,13 @@
           </filter>
         </defs>
 
-        <!-- 배경 영역: Indexing Phase -->
+        <!-- Background: Indexing Phase -->
         <rect x="20" y="20" width="440" height="480" rx="16" fill="url(#naiveGrad1)" stroke="#a78bfa" stroke-opacity="0.2" stroke-width="1"/>
-        <text x="40" y="52" fill="#a78bfa" font-size="12" font-weight="600" font-family="monospace" letter-spacing="2">INDEXING PHASE (오프라인)</text>
+        <text x="40" y="52" fill="#a78bfa" font-size="12" font-weight="600" font-family="monospace" letter-spacing="2">INDEXING PHASE (Offline)</text>
 
-        <!-- 배경 영역: Query Phase -->
+        <!-- Background: Query Phase -->
         <rect x="500" y="20" width="440" height="480" rx="16" fill="url(#naiveGrad2)" stroke="#22d3ee" stroke-opacity="0.2" stroke-width="1"/>
-        <text x="520" y="52" fill="#22d3ee" font-size="12" font-weight="600" font-family="monospace" letter-spacing="2">QUERY PHASE (온라인)</text>
+        <text x="520" y="52" fill="#22d3ee" font-size="12" font-weight="600" font-family="monospace" letter-spacing="2">QUERY PHASE (Online)</text>
 
         <!-- ===== INDEXING: Documents ===== -->
         <rect x="60" y="80" width="160" height="64" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="1.5"/>
@@ -348,9 +341,9 @@
         <!-- INDEXING: Chunking -->
         <rect x="60" y="180" width="160" height="64" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="1.5"/>
         <text x="140" y="206" text-anchor="middle" fill="#e8e8ed" font-size="14" font-weight="700">Chunking</text>
-        <text x="140" y="226" text-anchor="middle" fill="#9898a8" font-size="11">고정 크기 분할</text>
+        <text x="140" y="226" text-anchor="middle" fill="#9898a8" font-size="11">Fixed-size splitting</text>
 
-        <!-- Chunk 시각화 -->
+        <!-- Chunk visualization -->
         <rect x="260" y="186" width="60" height="18" rx="4" fill="#a78bfa" fill-opacity="0.25" stroke="#a78bfa" stroke-width="1"/>
         <text x="290" y="199" text-anchor="middle" fill="#a78bfa" font-size="9" font-weight="500">Chunk 1</text>
         <rect x="260" y="208" width="60" height="18" rx="4" fill="#a78bfa" fill-opacity="0.15" stroke="#a78bfa" stroke-width="1"/>
@@ -365,9 +358,9 @@
         <!-- INDEXING: Embedding Model -->
         <rect x="60" y="280" width="160" height="64" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="1.5"/>
         <text x="140" y="306" text-anchor="middle" fill="#e8e8ed" font-size="14" font-weight="700">Embedding Model</text>
-        <text x="140" y="326" text-anchor="middle" fill="#9898a8" font-size="11">텍스트 → 벡터 변환</text>
+        <text x="140" y="326" text-anchor="middle" fill="#9898a8" font-size="11">Text → Vector conversion</text>
 
-        <!-- 벡터 시각화 -->
+        <!-- Vector visualization -->
         <rect x="260" y="290" width="140" height="40" rx="6" fill="#16161f" stroke="#a78bfa" stroke-opacity="0.3" stroke-width="1"/>
         <text x="270" y="310" fill="#a78bfa" font-size="9" font-family="monospace">[0.12, -0.45, 0.78,</text>
         <text x="270" y="322" fill="#a78bfa" font-size="9" font-family="monospace"> 0.33, -0.91, ...]</text>
@@ -389,7 +382,7 @@
         <circle cx="570" cy="112" r="16" fill="#22d3ee" fill-opacity="0.15" stroke="#22d3ee" stroke-width="1.5"/>
         <text x="570" y="117" text-anchor="middle" fill="#22d3ee" font-size="14" font-weight="800">?</text>
         <text x="650" y="106" text-anchor="middle" fill="#e8e8ed" font-size="14" font-weight="700">User Query</text>
-        <text x="650" y="126" text-anchor="middle" fill="#9898a8" font-size="11">사용자 질문 입력</text>
+        <text x="650" y="126" text-anchor="middle" fill="#9898a8" font-size="11">User question input</text>
 
         <!-- Arrow: Query → Embed Query -->
         <line x1="620" y1="144" x2="620" y2="178" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrowHead)"/>
@@ -397,7 +390,7 @@
         <!-- Embed Query -->
         <rect x="540" y="180" width="160" height="50" rx="10" fill="#1e1e2a" stroke="#22d3ee" stroke-width="1.5"/>
         <text x="620" y="206" text-anchor="middle" fill="#e8e8ed" font-size="13" font-weight="600">Query Embedding</text>
-        <text x="620" y="222" text-anchor="middle" fill="#9898a8" font-size="10">질문도 벡터로 변환</text>
+        <text x="620" y="222" text-anchor="middle" fill="#9898a8" font-size="10">Convert query to vector</text>
 
         <!-- Arrow: Embed → Similarity Search -->
         <line x1="620" y1="230" x2="620" y2="268" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrowHead)"/>
@@ -405,11 +398,11 @@
         <!-- Similarity Search (connects to Vector DB) -->
         <rect x="540" y="270" width="160" height="64" rx="10" fill="#1e1e2a" stroke="#6366f1" stroke-width="2" filter="url(#glow)"/>
         <text x="620" y="296" text-anchor="middle" fill="#e8e8ed" font-size="14" font-weight="700">Similarity Search</text>
-        <text x="620" y="316" text-anchor="middle" fill="#9898a8" font-size="11">코사인 유사도 Top-K</text>
+        <text x="620" y="316" text-anchor="middle" fill="#9898a8" font-size="11">Cosine similarity Top-K</text>
 
         <!-- Connection: Vector DB ←→ Similarity Search -->
         <path d="M220 420 Q 380 420 380 302 Q 380 302 536 302" fill="none" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrowHead)"/>
-        <text x="380" y="370" text-anchor="middle" fill="#6366f1" font-size="10" font-weight="500">벡터 검색</text>
+        <text x="380" y="370" text-anchor="middle" fill="#6366f1" font-size="10" font-weight="500">Vector search</text>
 
         <!-- Arrow: Search → Prompt -->
         <line x1="620" y1="334" x2="620" y2="368" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrowHead)"/>
@@ -417,7 +410,7 @@
         <!-- Prompt Assembly -->
         <rect x="540" y="370" width="160" height="50" rx="10" fill="#1e1e2a" stroke="#34d399" stroke-width="1.5"/>
         <text x="620" y="394" text-anchor="middle" fill="#e8e8ed" font-size="13" font-weight="600">Prompt + Context</text>
-        <text x="620" y="410" text-anchor="middle" fill="#9898a8" font-size="10">질문 + 검색 문서 결합</text>
+        <text x="620" y="410" text-anchor="middle" fill="#9898a8" font-size="10">Combine query + retrieved docs</text>
 
         <!-- Arrow: Prompt → LLM -->
         <line x1="700" y1="395" x2="760" y2="395" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrowHead)"/>
@@ -425,39 +418,39 @@
         <!-- LLM -->
         <rect x="762" y="360" width="150" height="70" rx="14" fill="#1e1e2a" stroke="#fb923c" stroke-width="2"/>
         <text x="837" y="390" text-anchor="middle" fill="#fb923c" font-size="22" font-weight="800">LLM</text>
-        <text x="837" y="415" text-anchor="middle" fill="#9898a8" font-size="10">응답 생성</text>
+        <text x="837" y="415" text-anchor="middle" fill="#9898a8" font-size="10">Generate response</text>
 
         <!-- Arrow: LLM → Response -->
         <line x1="837" y1="430" x2="837" y2="468" stroke="#fb923c" stroke-width="1.5" marker-end="url(#arrowHead)"/>
 
         <!-- Response -->
         <rect x="762" y="470" width="150" height="24" rx="6" fill="#fb923c" fill-opacity="0.15" stroke="#fb923c" stroke-width="1"/>
-        <text x="837" y="487" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="600">Response (답변)</text>
+        <text x="837" y="487" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="600">Response</text>
       </svg>
     </div>
 
-    <!-- 한계점 -->
-    <h3 class="subsection-title reveal">Naive RAG의 한계</h3>
+    <!-- Limitations -->
+    <h3 class="subsection-title reveal">Limitations of Naive RAG</h3>
     <div class="limit-cards reveal">
       <div class="limit-card">
         <div class="limit-number">01</div>
         <h4>Garbage In, Garbage Out</h4>
-        <p>검색 품질이 낮으면 응답도 함께 망가집니다. 관련 없는 문서가 검색되면 LLM은 그걸 기반으로 엉뚱한 답을 만듭니다.</p>
+        <p>When retrieval quality is poor, the response degrades too. If irrelevant documents are retrieved, the LLM generates incorrect answers based on them.</p>
       </div>
       <div class="limit-card">
         <div class="limit-number">02</div>
-        <h4>단순한 청킹</h4>
-        <p>고정 크기로 문서를 자르면 문맥이 잘리거나, 하나의 청크에 여러 주제가 섞여 노이즈가 됩니다.</p>
+        <h4>Simplistic Chunking</h4>
+        <p>Splitting documents by fixed size cuts context or mixes multiple topics into a single chunk, creating noise.</p>
       </div>
       <div class="limit-card">
         <div class="limit-number">03</div>
-        <h4>무분별한 전달</h4>
-        <p>검색된 문서가 질문과 관련 없어도 그대로 LLM에 전달합니다. 필터링이나 품질 평가가 없습니다.</p>
+        <h4>Indiscriminate Passing</h4>
+        <p>Retrieved documents are passed to the LLM as-is even when irrelevant to the query. There is no filtering or quality assessment.</p>
       </div>
       <div class="limit-card">
         <div class="limit-number">04</div>
-        <h4>중복/상충 미처리</h4>
-        <p>중복 문서, 서로 모순되는 정보에 대한 처리 로직이 없어서 LLM이 혼란에 빠질 수 있습니다.</p>
+        <h4>No Dedup/Conflict Handling</h4>
+        <p>There is no logic to handle duplicate documents or contradictory information, which can confuse the LLM.</p>
       </div>
     </div>
   </div>
@@ -468,9 +461,9 @@
   <div class="container">
     <div class="section-label">STAGE 2</div>
     <h2 class="section-title">Advanced RAG</h2>
-    <p class="section-desc">Naive RAG의 한계를 검색 <strong>전/중/후</strong> 각 단계에서 체계적으로 보완합니다.</p>
+    <p class="section-desc">Systematically addresses the limitations of Naive RAG at each stage: <strong>pre/during/post</strong> retrieval.</p>
 
-    <!-- Advanced RAG 아키텍처 다이어그램 -->
+    <!-- Advanced RAG Architecture Diagram -->
     <div class="arch-diagram reveal">
       <svg class="arch-svg" viewBox="0 0 960 490" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -506,7 +499,7 @@
         <!-- User Query -->
         <rect x="40" y="70" width="170" height="50" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="1.5"/>
         <text x="125" y="92" text-anchor="middle" fill="#e8e8ed" font-size="13" font-weight="700">User Query</text>
-        <text x="125" y="108" text-anchor="middle" fill="#9898a8" font-size="10">원본 질문</text>
+        <text x="125" y="108" text-anchor="middle" fill="#9898a8" font-size="10">Original question</text>
 
         <!-- Arrow down -->
         <line x1="125" y1="120" x2="125" y2="148" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#ah2)"/>
@@ -514,7 +507,7 @@
         <!-- Query Rewriting -->
         <rect x="40" y="150" width="170" height="50" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="1.5"/>
         <text x="125" y="172" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="700">Query Rewriting</text>
-        <text x="125" y="189" text-anchor="middle" fill="#9898a8" font-size="10">질문 최적화 / 분해</text>
+        <text x="125" y="189" text-anchor="middle" fill="#9898a8" font-size="10">Optimize / decompose query</text>
 
         <!-- Branch: HyDE -->
         <line x1="125" y1="200" x2="70" y2="228" stroke="#a78bfa" stroke-width="1" stroke-dasharray="4 3"/>
@@ -545,20 +538,20 @@
         <!-- Dense -->
         <rect x="315" y="105" width="160" height="45" rx="8" fill="#1e1e2a" stroke="#a78bfa" stroke-opacity="0.5" stroke-width="1"/>
         <text x="395" y="125" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="600">Dense (Vector)</text>
-        <text x="395" y="142" text-anchor="middle" fill="#9898a8" font-size="9">시맨틱 유사도</text>
+        <text x="395" y="142" text-anchor="middle" fill="#9898a8" font-size="9">Semantic similarity</text>
 
         <!-- Sparse -->
         <rect x="315" y="160" width="160" height="45" rx="8" fill="#1e1e2a" stroke="#fb923c" stroke-opacity="0.5" stroke-width="1"/>
         <text x="395" y="180" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="600">Sparse (BM25)</text>
-        <text x="395" y="197" text-anchor="middle" fill="#9898a8" font-size="9">키워드 매칭</text>
+        <text x="395" y="197" text-anchor="middle" fill="#9898a8" font-size="9">Keyword matching</text>
 
         <!-- RRF -->
         <rect x="340" y="220" width="110" height="36" rx="8" fill="#6366f1" fill-opacity="0.2" stroke="#6366f1" stroke-width="1.5"/>
-        <text x="395" y="242" text-anchor="middle" fill="#6366f1" font-size="11" font-weight="700">RRF 결합</text>
+        <text x="395" y="242" text-anchor="middle" fill="#6366f1" font-size="11" font-weight="700">RRF Fusion</text>
 
         <!-- Results -->
         <rect x="330" y="272" width="130" height="36" rx="6" fill="#1e1e2a" stroke="#6366f1" stroke-opacity="0.5" stroke-width="1"/>
-        <text x="395" y="294" text-anchor="middle" fill="#e8e8ed" font-size="11" font-weight="500">Top-K 문서</text>
+        <text x="395" y="294" text-anchor="middle" fill="#e8e8ed" font-size="11" font-weight="500">Top-K Documents</text>
         <!-- merge lines -->
         <line x1="395" y1="150" x2="395" y2="158" stroke="#6366f1" stroke-width="1" stroke-dasharray="3 2"/>
         <line x1="395" y1="205" x2="395" y2="218" stroke="#6366f1" stroke-width="1.5"/>
@@ -567,7 +560,7 @@
         <!-- Vector DB on the side -->
         <rect x="310" y="370" width="170" height="50" rx="10" fill="#1e1e2a" stroke="#6366f1" stroke-width="1.5"/>
         <text x="395" y="395" text-anchor="middle" fill="#6366f1" font-size="12" font-weight="600">Vector DB + BM25 Index</text>
-        <text x="395" y="412" text-anchor="middle" fill="#9898a8" font-size="9">멀티 인덱스 전략</text>
+        <text x="395" y="412" text-anchor="middle" fill="#9898a8" font-size="9">Multi-index strategy</text>
         <line x1="395" y1="360" x2="395" y2="368" stroke="#6366f1" stroke-width="1" stroke-dasharray="4 3"/>
 
         <!-- Arrow to Post-Retrieval -->
@@ -580,21 +573,21 @@
 
         <rect x="602" y="105" width="160" height="50" rx="8" fill="#1e1e2a" stroke="#22d3ee" stroke-opacity="0.6" stroke-width="1.5"/>
         <text x="682" y="127" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">Reranker</text>
-        <text x="682" y="145" text-anchor="middle" fill="#9898a8" font-size="9">Cross-Encoder 재순위화</text>
+        <text x="682" y="145" text-anchor="middle" fill="#9898a8" font-size="9">Cross-Encoder reranking</text>
 
         <line x1="682" y1="155" x2="682" y2="170" stroke="#22d3ee" stroke-width="1"/>
 
         <!-- Compression -->
         <rect x="602" y="172" width="160" height="44" rx="8" fill="#1e1e2a" stroke="#22d3ee" stroke-opacity="0.4" stroke-width="1"/>
         <text x="682" y="194" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="600">Compression</text>
-        <text x="682" y="209" text-anchor="middle" fill="#9898a8" font-size="9">관련 부분만 추출</text>
+        <text x="682" y="209" text-anchor="middle" fill="#9898a8" font-size="9">Extract relevant parts only</text>
 
         <line x1="682" y1="216" x2="682" y2="230" stroke="#22d3ee" stroke-width="1"/>
 
         <!-- Dedup -->
         <rect x="602" y="232" width="160" height="44" rx="8" fill="#1e1e2a" stroke="#22d3ee" stroke-opacity="0.4" stroke-width="1"/>
         <text x="682" y="254" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="600">Dedup & Filter</text>
-        <text x="682" y="269" text-anchor="middle" fill="#9898a8" font-size="9">중복 제거, MMR</text>
+        <text x="682" y="269" text-anchor="middle" fill="#9898a8" font-size="9">Remove duplicates, MMR</text>
 
         <!-- Refined Context -->
         <rect x="612" y="296" width="140" height="36" rx="6" fill="#22d3ee" fill-opacity="0.12" stroke="#22d3ee" stroke-width="1.5"/>
@@ -617,7 +610,7 @@
         <!-- LLM -->
         <rect x="843" y="168" width="82" height="60" rx="10" fill="#fb923c" fill-opacity="0.12" stroke="#fb923c" stroke-width="2"/>
         <text x="884" y="198" text-anchor="middle" fill="#fb923c" font-size="18" font-weight="800">LLM</text>
-        <text x="884" y="218" text-anchor="middle" fill="#9898a8" font-size="8">생성</text>
+        <text x="884" y="218" text-anchor="middle" fill="#9898a8" font-size="8">Generate</text>
 
         <line x1="884" y1="228" x2="884" y2="248" stroke="#fb923c" stroke-width="1.5"/>
 
@@ -625,17 +618,17 @@
         <rect x="843" y="250" width="82" height="36" rx="6" fill="#fb923c" fill-opacity="0.15" stroke="#fb923c" stroke-width="1"/>
         <text x="884" y="272" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="600">Response</text>
 
-        <!-- 하단 범례 -->
+        <!-- Legend -->
         <rect x="320" y="450" width="12" height="12" rx="3" fill="#a78bfa"/>
-        <text x="338" y="461" fill="#9898a8" font-size="10">쿼리 최적화</text>
-        <rect x="440" y="450" width="12" height="12" rx="3" fill="#6366f1"/>
-        <text x="458" y="461" fill="#9898a8" font-size="10">하이브리드 검색</text>
-        <rect x="570" y="450" width="12" height="12" rx="3" fill="#22d3ee"/>
-        <text x="588" y="461" fill="#9898a8" font-size="10">후처리 (Rerank + 압축)</text>
+        <text x="338" y="461" fill="#9898a8" font-size="10">Query optimization</text>
+        <rect x="470" y="450" width="12" height="12" rx="3" fill="#6366f1"/>
+        <text x="488" y="461" fill="#9898a8" font-size="10">Hybrid search</text>
+        <rect x="600" y="450" width="12" height="12" rx="3" fill="#22d3ee"/>
+        <text x="618" y="461" fill="#9898a8" font-size="10">Post-processing (Rerank + Compress)</text>
       </svg>
     </div>
 
-    <!-- 3단계 탭 -->
+    <!-- 3-Stage Tabs -->
     <div class="adv-tabs reveal">
       <div class="tab-buttons">
         <button class="tab-btn active" data-tab="pre">
@@ -657,57 +650,57 @@
         <div class="technique-grid">
           <div class="technique-card">
             <h4>Query Rewriting</h4>
-            <p>사용자 질문을 검색에 유리한 형태로 변환합니다. 구어체 → 검색 쿼리, 복합 질문 → 단일 질문 분리 등.</p>
+            <p>Transforms user questions into forms optimized for retrieval. Converts colloquial language into search queries, splits compound questions into single queries, etc.</p>
             <div class="technique-example">
-              <div class="example-before">"우리 회사 휴가 어떻게 쓰는 거야?"</div>
+              <div class="example-before">"How do I use my vacation days?"</div>
               <div class="example-arrow">→</div>
-              <div class="example-after">"연차 휴가 사용 절차 및 규정"</div>
+              <div class="example-after">"Annual leave usage procedures and policies"</div>
             </div>
           </div>
           <div class="technique-card">
             <h4>HyDE <span class="paper-badge">Gao et al., 2022</span></h4>
-            <p><strong>Hypothetical Document Embeddings</strong> — LLM이 먼저 가상의 답변을 생성하고, 그 답변의 임베딩으로 검색합니다. 질문보다 답변이 문서와 더 유사하다는 통찰.</p>
+            <p><strong>Hypothetical Document Embeddings</strong> — The LLM first generates a hypothetical answer, then uses its embedding for retrieval. The insight is that answers are more similar to documents than questions are.</p>
             <div class="technique-flow">
-              <span class="flow-step">질문</span>
+              <span class="flow-step">Question</span>
               <span class="flow-arrow">→</span>
-              <span class="flow-step highlight">가상 답변 생성</span>
+              <span class="flow-step highlight">Generate hypothetical answer</span>
               <span class="flow-arrow">→</span>
-              <span class="flow-step">답변 임베딩으로 검색</span>
+              <span class="flow-step">Search using answer embedding</span>
             </div>
           </div>
           <div class="technique-card">
             <h4>Query Expansion</h4>
-            <p>하나의 질문을 여러 관점에서 확장해서 검색 범위를 넓힙니다. Multi-Query, Sub-Question Decomposition 등의 기법이 있습니다.</p>
+            <p>Expands a single question from multiple perspectives to broaden the search scope. Techniques include Multi-Query, Sub-Question Decomposition, and more.</p>
           </div>
           <div class="technique-card">
-            <h4>청킹 전략 고도화</h4>
-            <p>고정 크기가 아닌 의미 단위로 문서를 분할합니다.</p>
+            <h4>Advanced Chunking Strategies</h4>
+            <p>Splits documents by semantic units rather than fixed sizes.</p>
             <div class="chunk-comparison">
               <div class="chunk-type">
                 <strong>Recursive</strong>
-                <span class="chunk-desc">구분자 계층으로 재귀 분할. 가장 안정적 (69% 승률)</span>
+                <span class="chunk-desc">Recursively split using separator hierarchy. Most stable (69% win rate)</span>
               </div>
               <div class="chunk-type">
                 <strong>Semantic</strong>
-                <span class="chunk-desc">의미 변화 지점에서 분할. 높은 재현율</span>
+                <span class="chunk-desc">Split at semantic shift points. High recall</span>
               </div>
               <div class="chunk-type">
                 <strong>Parent-Child</strong>
-                <span class="chunk-desc">작은 청크로 검색, 큰 청크로 컨텍스트 제공</span>
+                <span class="chunk-desc">Search with small chunks, provide context with large chunks</span>
               </div>
               <div class="chunk-type">
                 <strong>Sentence Window</strong>
-                <span class="chunk-desc">문장 단위 검색 + 주변 문장 포함</span>
+                <span class="chunk-desc">Sentence-level search + include surrounding sentences</span>
               </div>
             </div>
           </div>
           <div class="technique-card">
             <h4>Contextual Retrieval <span class="paper-badge">Anthropic, 2024</span></h4>
-            <p>각 청크에 <strong>문서 수준의 맥락을 접두사로 추가</strong>한 뒤 임베딩합니다. "이 청크는 2024년 매출 보고서의 3분기 실적 섹션에서 발췌한 내용입니다" 같은 맥락 정보를 붙여서 검색 정확도를 크게 향상시킵니다.</p>
+            <p>Adds <strong>document-level context as a prefix</strong> to each chunk before embedding. By prepending context like "This chunk is excerpted from the Q3 performance section of the 2024 revenue report," retrieval accuracy improves significantly.</p>
           </div>
           <div class="technique-card">
-            <h4>메타데이터 태깅</h4>
-            <p>문서에 날짜, 출처, 카테고리, 작성자 등 부가 정보를 부착합니다. 필터링과 결합하면 검색 정밀도가 크게 올라갑니다.</p>
+            <h4>Metadata Tagging</h4>
+            <p>Attaches supplementary information such as date, source, category, and author to documents. When combined with filtering, retrieval precision increases significantly.</p>
           </div>
         </div>
       </div>
@@ -716,39 +709,39 @@
       <div class="tab-content" id="tab-retrieval">
         <div class="technique-grid">
           <div class="technique-card technique-featured">
-            <h4>하이브리드 검색</h4>
-            <p>Dense(벡터) 검색과 Sparse(BM25 키워드) 검색을 <strong>결합</strong>합니다. 의미 유사성 + 키워드 정확성을 동시에 잡아 가장 안정적인 성능을 제공합니다.</p>
+            <h4>Hybrid Search</h4>
+            <p><strong>Combines</strong> Dense (vector) search and Sparse (BM25 keyword) search. Captures both semantic similarity and keyword precision for the most reliable performance.</p>
             <div class="hybrid-visual">
               <div class="hybrid-side">
-                <div class="hybrid-label">Dense (벡터)</div>
+                <div class="hybrid-label">Dense (Vector)</div>
                 <div class="hybrid-bar dense-bar"></div>
-                <span class="hybrid-desc">의미 유사성 기반</span>
+                <span class="hybrid-desc">Semantic similarity based</span>
               </div>
               <div class="hybrid-plus">+</div>
               <div class="hybrid-side">
                 <div class="hybrid-label">Sparse (BM25)</div>
                 <div class="hybrid-bar sparse-bar"></div>
-                <span class="hybrid-desc">키워드 매칭 기반</span>
+                <span class="hybrid-desc">Keyword matching based</span>
               </div>
               <div class="hybrid-equals">=</div>
               <div class="hybrid-side">
                 <div class="hybrid-label">Hybrid</div>
                 <div class="hybrid-bar hybrid-bar-result"></div>
-                <span class="hybrid-desc">최적의 검색 결과</span>
+                <span class="hybrid-desc">Optimal search results</span>
               </div>
             </div>
           </div>
           <div class="technique-card">
             <h4>Fine-tuned Embedding</h4>
-            <p>도메인 특화 데이터로 임베딩 모델을 추가 학습합니다. 일반 모델 대비 <strong>12~30%</strong> 성능 향상이 보고됩니다. 의료, 법률, 금융 등 전문 도메인에서 효과가 큽니다.</p>
+            <p>Further trains embedding models with domain-specific data. Reports show <strong>12~30%</strong> performance improvement over general models. Highly effective in specialized domains like medical, legal, and finance.</p>
           </div>
           <div class="technique-card">
-            <h4>Multi-Index 전략</h4>
-            <p>요약 인덱스, 원문 인덱스, 메타데이터 인덱스 등을 <strong>계층화</strong>합니다. 요약으로 먼저 관련 문서를 좁히고, 원문에서 세부 정보를 가져오는 방식.</p>
+            <h4>Multi-Index Strategy</h4>
+            <p><strong>Layers</strong> summary indexes, full-text indexes, and metadata indexes. First narrows down relevant documents via summaries, then retrieves details from full text.</p>
           </div>
           <div class="technique-card">
             <h4>Late Interaction (ColBERT)</h4>
-            <p><strong>토큰별 임베딩</strong>을 저장하고 MaxSim 연산으로 유사도를 계산합니다. Bi-Encoder의 속도와 Cross-Encoder의 정확도 사이에서 좋은 균형을 잡습니다. ColPali/ColQwen은 이를 멀티모달로 확장.</p>
+            <p>Stores <strong>per-token embeddings</strong> and computes similarity via MaxSim. Achieves a good balance between Bi-Encoder speed and Cross-Encoder accuracy. ColPali/ColQwen extend this to multimodal.</p>
           </div>
         </div>
       </div>
@@ -757,37 +750,37 @@
       <div class="tab-content" id="tab-post">
         <div class="technique-grid">
           <div class="technique-card technique-featured">
-            <h4>Reranker (재순위화)</h4>
-            <p>검색 결과를 <strong>Cross-Encoder</strong>로 다시 평가해서 순위를 재조정합니다. 질문-문서 쌍을 함께 보기 때문에 더 정밀한 관련성 판단이 가능합니다.</p>
+            <h4>Reranker</h4>
+            <p>Re-evaluates search results using a <strong>Cross-Encoder</strong> and reorders the rankings. Since it examines question-document pairs together, it enables more precise relevance judgments.</p>
             <div class="rerank-visual">
               <div class="rerank-before">
-                <div class="rerank-label">검색 결과 (Before)</div>
-                <div class="rerank-item">문서 A <span class="score">0.82</span></div>
-                <div class="rerank-item">문서 B <span class="score">0.79</span></div>
-                <div class="rerank-item highlight-bad">문서 C <span class="score">0.77</span></div>
-                <div class="rerank-item">문서 D <span class="score">0.75</span></div>
+                <div class="rerank-label">Search Results (Before)</div>
+                <div class="rerank-item">Doc A <span class="score">0.82</span></div>
+                <div class="rerank-item">Doc B <span class="score">0.79</span></div>
+                <div class="rerank-item highlight-bad">Doc C <span class="score">0.77</span></div>
+                <div class="rerank-item">Doc D <span class="score">0.75</span></div>
               </div>
               <div class="rerank-arrow">
                 <svg viewBox="0 0 48 24"><path d="M4 12h32M28 4l8 8-8 8" stroke="currentColor" stroke-width="2" fill="none"/></svg>
                 <span>Rerank</span>
               </div>
               <div class="rerank-after">
-                <div class="rerank-label">재순위 (After)</div>
-                <div class="rerank-item highlight-good">문서 C <span class="score">0.95</span></div>
-                <div class="rerank-item">문서 A <span class="score">0.88</span></div>
-                <div class="rerank-item">문서 D <span class="score">0.72</span></div>
-                <div class="rerank-item">문서 B <span class="score">0.45</span></div>
+                <div class="rerank-label">Reranked (After)</div>
+                <div class="rerank-item highlight-good">Doc C <span class="score">0.95</span></div>
+                <div class="rerank-item">Doc A <span class="score">0.88</span></div>
+                <div class="rerank-item">Doc D <span class="score">0.72</span></div>
+                <div class="rerank-item">Doc B <span class="score">0.45</span></div>
               </div>
             </div>
-            <p class="technique-note">MAP(Mean Average Precision) <strong>52% 향상</strong> 보고 — Cohere Rerank, bge-reranker, FlashRank 등</p>
+            <p class="technique-note">MAP (Mean Average Precision) <strong>52% improvement</strong> reported — Cohere Rerank, bge-reranker, FlashRank, etc.</p>
           </div>
           <div class="technique-card">
-            <h4>문서 압축 (Compression)</h4>
-            <p>검색된 문서에서 <strong>관련 있는 부분만 추출</strong>해서 컨텍스트 윈도우를 절약합니다. LongLLMLingua 등의 방식으로 핵심 문장만 남깁니다.</p>
+            <h4>Document Compression</h4>
+            <p><strong>Extracts only relevant portions</strong> from retrieved documents to save context window space. Methods like LongLLMLingua retain only key sentences.</p>
           </div>
           <div class="technique-card">
-            <h4>중복 제거 및 필터링</h4>
-            <p>유사도 임계값, MMR(Maximal Marginal Relevance) 등으로 중복 문서를 제거하고 다양성을 확보합니다.</p>
+            <h4>Deduplication & Filtering</h4>
+            <p>Removes duplicate documents and ensures diversity using similarity thresholds, MMR (Maximal Marginal Relevance), and other techniques.</p>
           </div>
         </div>
       </div>
@@ -801,10 +794,10 @@
     <div class="section-label">STAGE 3</div>
     <h2 class="section-title">Modular RAG</h2>
     <p class="section-desc">
-      파이프라인을 고정된 순서가 아닌 <strong>모듈 단위</strong>로 분리해서 태스크에 맞게 조합하는 패러다임입니다.
+      A paradigm that breaks the pipeline into <strong>modular units</strong> instead of a fixed sequence, composing them dynamically to match the task.
     </p>
 
-    <!-- Modular RAG 아키텍처 다이어그램 -->
+    <!-- Modular RAG Architecture Diagram -->
     <div class="arch-diagram reveal">
       <svg class="arch-svg" viewBox="0 0 960 480" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -831,7 +824,7 @@
         <!-- User Query -->
         <rect x="40" y="200" width="120" height="60" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="2"/>
         <text x="100" y="226" text-anchor="middle" fill="#e8e8ed" font-size="13" font-weight="700">Query</text>
-        <text x="100" y="244" text-anchor="middle" fill="#9898a8" font-size="10">사용자 질문</text>
+        <text x="100" y="244" text-anchor="middle" fill="#9898a8" font-size="10">User question</text>
 
         <!-- Arrow to Router -->
         <line x1="160" y1="230" x2="208" y2="230" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#mah)"/>
@@ -839,15 +832,15 @@
         <!-- ROUTER — central hub -->
         <rect x="212" y="180" width="130" height="100" rx="14" fill="#a78bfa" fill-opacity="0.12" stroke="#a78bfa" stroke-width="2"/>
         <text x="277" y="218" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="800">Router</text>
-        <text x="277" y="240" text-anchor="middle" fill="#9898a8" font-size="10">질문 유형 판단</text>
-        <text x="277" y="255" text-anchor="middle" fill="#9898a8" font-size="10">경로 결정</text>
+        <text x="277" y="240" text-anchor="middle" fill="#9898a8" font-size="10">Classify question type</text>
+        <text x="277" y="255" text-anchor="middle" fill="#9898a8" font-size="10">Determine path</text>
 
         <!-- Path 1: Simple → Direct LLM (top) -->
         <path d="M277 180 Q 277 120 370 120" fill="none" stroke="#34d399" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#mahG)"/>
         <rect x="374" y="96" width="140" height="48" rx="8" fill="#1e1e2a" stroke="#34d399" stroke-width="1.5"/>
         <text x="444" y="117" text-anchor="middle" fill="#34d399" font-size="11" font-weight="700">Direct LLM</text>
-        <text x="444" y="134" text-anchor="middle" fill="#9898a8" font-size="9">검색 불필요 → 바로 생성</text>
-        <text x="338" y="110" fill="#34d399" font-size="9" font-weight="600">단순 질문</text>
+        <text x="444" y="134" text-anchor="middle" fill="#9898a8" font-size="9">No retrieval needed → generate directly</text>
+        <text x="338" y="110" fill="#34d399" font-size="9" font-weight="600">Simple query</text>
 
         <!-- Path 2: Normal → Retrieve → Generate (middle) -->
         <line x1="342" y1="220" x2="373" y2="220" stroke="#6366f1" stroke-width="1.5" marker-end="url(#mah)"/>
@@ -855,7 +848,7 @@
         <!-- Retrieval Module -->
         <rect x="376" y="186" width="130" height="68" rx="10" fill="#1e1e2a" stroke="#6366f1" stroke-width="1.5"/>
         <text x="441" y="212" text-anchor="middle" fill="#6366f1" font-size="12" font-weight="700">Retrieval</text>
-        <text x="441" y="230" text-anchor="middle" fill="#9898a8" font-size="9">Multi-Source 검색</text>
+        <text x="441" y="230" text-anchor="middle" fill="#9898a8" font-size="9">Multi-Source search</text>
         <text x="441" y="244" text-anchor="middle" fill="#9898a8" font-size="9">Vector / Web / SQL</text>
 
         <!-- Arrow to Judge -->
@@ -864,29 +857,29 @@
         <!-- Judge Module -->
         <rect x="546" y="180" width="120" height="80" rx="10" fill="#fb923c" fill-opacity="0.1" stroke="#fb923c" stroke-width="2"/>
         <text x="606" y="210" text-anchor="middle" fill="#fb923c" font-size="14" font-weight="800">Judge</text>
-        <text x="606" y="228" text-anchor="middle" fill="#9898a8" font-size="9">충분한가?</text>
-        <text x="606" y="244" text-anchor="middle" fill="#9898a8" font-size="9">품질 평가</text>
+        <text x="606" y="228" text-anchor="middle" fill="#9898a8" font-size="9">Sufficient?</text>
+        <text x="606" y="244" text-anchor="middle" fill="#9898a8" font-size="9">Quality assessment</text>
 
         <!-- Judge → Sufficient → Generate -->
         <line x1="666" y1="210" x2="718" y2="210" stroke="#34d399" stroke-width="1.5" marker-end="url(#mahG)"/>
-        <text x="692" y="200" fill="#34d399" font-size="9" font-weight="600">충분</text>
+        <text x="692" y="200" fill="#34d399" font-size="9" font-weight="600">Pass</text>
 
         <!-- Judge → Insufficient → Re-Retrieve (loop back) -->
         <path d="M606 260 Q 606 310 441 310 Q 441 310 441 258" fill="none" stroke="#f87171" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#mahR)"/>
-        <text x="530" y="304" fill="#f87171" font-size="9" font-weight="600">부족 → 재검색</text>
+        <text x="530" y="304" fill="#f87171" font-size="9" font-weight="600">Insufficient → re-retrieve</text>
 
         <!-- Judge → Ambiguous → Web Search -->
         <path d="M606 260 Q 606 350 520 370" fill="none" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#mahO)"/>
         <rect x="416" y="358" width="110" height="40" rx="8" fill="#1e1e2a" stroke="#fb923c" stroke-opacity="0.6" stroke-width="1"/>
         <text x="471" y="378" text-anchor="middle" fill="#fb923c" font-size="10" font-weight="600">Web Search</text>
-        <text x="471" y="392" text-anchor="middle" fill="#9898a8" font-size="8">보조 소스</text>
-        <text x="580" y="356" fill="#fb923c" font-size="9" font-weight="600">모호</text>
+        <text x="471" y="392" text-anchor="middle" fill="#9898a8" font-size="8">Auxiliary source</text>
+        <text x="580" y="356" fill="#fb923c" font-size="9" font-weight="600">Ambiguous</text>
 
         <!-- Generate Module -->
         <rect x="722" y="176" width="120" height="68" rx="10" fill="#1e1e2a" stroke="#34d399" stroke-width="2"/>
         <text x="782" y="204" text-anchor="middle" fill="#34d399" font-size="14" font-weight="700">Generate</text>
-        <text x="782" y="224" text-anchor="middle" fill="#9898a8" font-size="9">LLM 응답 생성</text>
-        <text x="782" y="238" text-anchor="middle" fill="#9898a8" font-size="9">+ 출처 첨부</text>
+        <text x="782" y="224" text-anchor="middle" fill="#9898a8" font-size="9">LLM response generation</text>
+        <text x="782" y="238" text-anchor="middle" fill="#9898a8" font-size="9">+ attach sources</text>
 
         <!-- Generate → Self-Evaluate -->
         <line x1="842" y1="210" x2="868" y2="210" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#mah)"/>
@@ -895,7 +888,7 @@
         <rect x="872" y="172" width="68" height="76" rx="10" fill="#22d3ee" fill-opacity="0.1" stroke="#22d3ee" stroke-width="1.5"/>
         <text x="906" y="200" text-anchor="middle" fill="#22d3ee" font-size="10" font-weight="700">Self</text>
         <text x="906" y="214" text-anchor="middle" fill="#22d3ee" font-size="10" font-weight="700">Eval</text>
-        <text x="906" y="238" text-anchor="middle" fill="#9898a8" font-size="8">품질 OK?</text>
+        <text x="906" y="238" text-anchor="middle" fill="#9898a8" font-size="8">Quality OK?</text>
 
         <!-- Self-Eval → Output (pass) -->
         <line x1="906" y1="248" x2="906" y2="300" stroke="#34d399" stroke-width="1.5" marker-end="url(#mahG)"/>
@@ -904,66 +897,66 @@
 
         <!-- Self-Eval → loop back (fail) -->
         <path d="M872 220 Q 830 280 782 248" fill="none" stroke="#f87171" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#mahR)"/>
-        <text x="824" y="275" fill="#f87171" font-size="8" font-weight="600">재생성</text>
+        <text x="824" y="275" fill="#f87171" font-size="8" font-weight="600">Regenerate</text>
 
         <!-- Path 3: Complex → Multi-step (bottom) -->
         <path d="M277 280 Q 277 370 374 408" fill="none" stroke="#f472b6" stroke-width="1.5" stroke-dasharray="6 3"/>
-        <text x="290" y="355" fill="#f472b6" font-size="9" font-weight="600">복잡 질문</text>
+        <text x="290" y="355" fill="#f472b6" font-size="9" font-weight="600">Complex query</text>
 
         <!-- Multi-step Reasoning -->
         <rect x="376" y="420" width="200" height="44" rx="8" fill="#1e1e2a" stroke="#f472b6" stroke-width="1.5"/>
         <text x="476" y="442" text-anchor="middle" fill="#f472b6" font-size="11" font-weight="700">Iterative Retrieval + Memory</text>
-        <text x="476" y="458" text-anchor="middle" fill="#9898a8" font-size="9">멀티스텝 검색-생성 반복</text>
+        <text x="476" y="458" text-anchor="middle" fill="#9898a8" font-size="9">Multi-step retrieve-generate loop</text>
 
         <!-- Multi-step → Judge -->
         <path d="M576 442 Q 640 442 640 310 Q 640 260 606 260" fill="none" stroke="#f472b6" stroke-width="1" stroke-dasharray="4 3"/>
 
-        <!-- 하단 범례 -->
+        <!-- Legend -->
         <line x1="40" y1="455" x2="60" y2="455" stroke="#34d399" stroke-width="2"/>
-        <text x="66" y="459" fill="#9898a8" font-size="9">통과 경로</text>
+        <text x="66" y="459" fill="#9898a8" font-size="9">Pass path</text>
         <line x1="140" y1="455" x2="160" y2="455" stroke="#f87171" stroke-width="2" stroke-dasharray="5 3"/>
-        <text x="166" y="459" fill="#9898a8" font-size="9">재시도 루프</text>
+        <text x="166" y="459" fill="#9898a8" font-size="9">Retry loop</text>
         <line x1="250" y1="455" x2="270" y2="455" stroke="#fb923c" stroke-width="2" stroke-dasharray="5 3"/>
-        <text x="276" y="459" fill="#9898a8" font-size="9">보정 경로</text>
+        <text x="276" y="459" fill="#9898a8" font-size="9">Correction path</text>
       </svg>
     </div>
 
-    <!-- 모듈 그리드 -->
+    <!-- Module Grid -->
     <div class="module-grid reveal">
       <div class="module-card module-router">
         <div class="module-icon">🔀</div>
         <h4>Router</h4>
-        <p>질문 유형을 판단해서 검색이 필요한지, 어떤 소스를 쓸지 결정합니다. 단순 질문은 바로 LLM 생성으로.</p>
+        <p>Classifies the question type and decides whether retrieval is needed and which source to use. Simple questions go directly to LLM generation.</p>
       </div>
       <div class="module-card module-judge">
         <div class="module-icon">⚖️</div>
         <h4>Judge / Critic</h4>
-        <p>검색 결과가 충분한지 평가합니다. 부족하면 재검색을 트리거하거나 다른 소스로 전환합니다.</p>
+        <p>Evaluates whether search results are sufficient. If insufficient, triggers re-retrieval or switches to a different source.</p>
       </div>
       <div class="module-card module-adaptive">
         <div class="module-icon">🧠</div>
         <h4>Adaptive Retrieval</h4>
-        <p>LLM이 스스로 "지금 검색이 필요한 시점인가?"를 판단합니다. 불필요한 검색을 줄여 효율성을 높입니다.</p>
+        <p>The LLM itself judges "Is retrieval needed right now?" Reduces unnecessary retrieval to improve efficiency.</p>
       </div>
       <div class="module-card module-multi">
         <div class="module-icon">🔗</div>
         <h4>Multi-Source</h4>
-        <p>벡터 DB, 웹 검색, SQL DB, API 등 여러 소스를 동적으로 선택합니다.</p>
+        <p>Dynamically selects from multiple sources: Vector DB, web search, SQL DB, APIs, and more.</p>
       </div>
       <div class="module-card module-iterative">
         <div class="module-icon">🔄</div>
         <h4>Iterative Retrieval</h4>
-        <p>한 번이 아니라 여러 차례 검색-생성을 반복하며 답변을 정제합니다.</p>
+        <p>Repeats the retrieve-generate cycle multiple times, not just once, to refine the answer.</p>
       </div>
       <div class="module-card module-memory">
         <div class="module-icon">💾</div>
         <h4>Memory</h4>
-        <p>이전 대화나 검색 이력을 활용해서 맥락을 유지합니다.</p>
+        <p>Leverages previous conversations and search history to maintain context.</p>
       </div>
     </div>
 
-    <!-- 대표 패턴 -->
-    <h3 class="subsection-title reveal">대표 구현 패턴</h3>
+    <!-- Representative Patterns -->
+    <h3 class="subsection-title reveal">Key Implementation Patterns</h3>
 
     <div class="pattern-cards reveal">
       <!-- Self-RAG -->
@@ -972,30 +965,30 @@
           <h4>Self-RAG</h4>
           <span class="paper-badge">Asai et al., ICLR 2024</span>
         </div>
-        <p>LLM이 <strong>Reflection Token</strong>으로 검색 필요 여부, 문서 관련성, 응답 품질을 <em>자체 판단</em>합니다.</p>
+        <p>The LLM uses <strong>Reflection Tokens</strong> to <em>self-assess</em> whether retrieval is needed, document relevance, and response quality.</p>
         <div class="pattern-flow">
-          <div class="pf-step">질문 입력</div>
+          <div class="pf-step">Question input</div>
           <div class="pf-arrow">→</div>
-          <div class="pf-step pf-decision">[Retrieve] 토큰?</div>
+          <div class="pf-step pf-decision">[Retrieve] token?</div>
           <div class="pf-branch">
             <div class="pf-yes">
               <span class="pf-label">Yes</span>
-              <div class="pf-step">검색 수행</div>
+              <div class="pf-step">Perform retrieval</div>
               <div class="pf-arrow">→</div>
-              <div class="pf-step pf-decision">[IsRel] 관련?</div>
+              <div class="pf-step pf-decision">[IsRel] Relevant?</div>
               <div class="pf-arrow">→</div>
-              <div class="pf-step">생성</div>
+              <div class="pf-step">Generate</div>
               <div class="pf-arrow">→</div>
-              <div class="pf-step pf-decision">[IsSup] 근거?</div>
+              <div class="pf-step pf-decision">[IsSup] Supported?</div>
             </div>
             <div class="pf-no">
               <span class="pf-label">No</span>
-              <div class="pf-step">바로 생성</div>
+              <div class="pf-step">Generate directly</div>
             </div>
           </div>
         </div>
         <div class="pattern-insight">
-          <strong>핵심 통찰:</strong> 모든 질문에 검색을 할 필요 없이, LLM이 필요할 때만 검색합니다. 불필요한 검색으로 인한 노이즈를 줄입니다.
+          <strong>Key insight:</strong> Instead of retrieving for every question, the LLM only retrieves when needed. This reduces noise from unnecessary retrieval.
         </div>
       </div>
 
@@ -1005,28 +998,28 @@
           <h4>CRAG (Corrective RAG)</h4>
           <span class="paper-badge">Yan et al., 2024</span>
         </div>
-        <p>검색 결과를 <strong>Correct / Incorrect / Ambiguous</strong>로 분류 후, 각각 다른 보정 경로를 선택합니다.</p>
+        <p>Classifies search results as <strong>Correct / Incorrect / Ambiguous</strong> and selects different correction paths accordingly.</p>
         <div class="crag-flow">
-          <div class="crag-step">검색 수행</div>
+          <div class="crag-step">Perform retrieval</div>
           <div class="crag-arrow">→</div>
           <div class="crag-step crag-eval">Retrieval Evaluator</div>
           <div class="crag-branches">
             <div class="crag-branch correct">
               <span class="crag-label">Correct</span>
-              <p>문서 정제 후 생성</p>
+              <p>Refine documents, then generate</p>
             </div>
             <div class="crag-branch incorrect">
               <span class="crag-label">Incorrect</span>
-              <p>웹 검색으로 대체</p>
+              <p>Fall back to web search</p>
             </div>
             <div class="crag-branch ambiguous">
               <span class="crag-label">Ambiguous</span>
-              <p>문서 + 웹 검색 결합</p>
+              <p>Combine documents + web search</p>
             </div>
           </div>
         </div>
         <div class="pattern-insight">
-          <strong>성과:</strong> Self-CRAG는 벤치마크에서 정확도 <strong>19~37% 향상</strong>을 보고했습니다.
+          <strong>Results:</strong> Self-CRAG reported accuracy improvements of <strong>19~37%</strong> on benchmarks.
         </div>
       </div>
 
@@ -1036,7 +1029,7 @@
           <h4>Graph RAG</h4>
           <span class="paper-badge">Microsoft, 2024</span>
         </div>
-        <p><strong>지식 그래프</strong>를 구축해서 엔티티 간 관계 기반 검색을 수행합니다. 여러 문서에 흩어진 정보를 연결하는 "글로벌 질문"에 강점.</p>
+        <p>Builds a <strong>knowledge graph</strong> and performs retrieval based on entity relationships. Excels at "global questions" that connect information scattered across multiple documents.</p>
         <div class="graph-visual">
           <svg class="graph-svg" viewBox="0 0 400 200">
             <line x1="100" y1="60" x2="200" y2="40" stroke="var(--graph-edge)" stroke-width="2"/>
@@ -1050,15 +1043,15 @@
             <circle cx="300" cy="70" r="18" fill="var(--node-3)"/>
             <circle cx="150" cy="140" r="18" fill="var(--node-4)"/>
             <circle cx="250" cy="140" r="18" fill="var(--node-5)"/>
-            <text x="100" y="65" text-anchor="middle" fill="white" font-size="10">회사A</text>
-            <text x="200" y="45" text-anchor="middle" fill="white" font-size="10">기술X</text>
-            <text x="300" y="75" text-anchor="middle" fill="white" font-size="10">시장Y</text>
-            <text x="150" y="145" text-anchor="middle" fill="white" font-size="10">제품B</text>
-            <text x="250" y="145" text-anchor="middle" fill="white" font-size="10">경쟁사C</text>
+            <text x="100" y="65" text-anchor="middle" fill="white" font-size="10">Co. A</text>
+            <text x="200" y="45" text-anchor="middle" fill="white" font-size="10">Tech X</text>
+            <text x="300" y="75" text-anchor="middle" fill="white" font-size="10">Mkt Y</text>
+            <text x="150" y="145" text-anchor="middle" fill="white" font-size="10">Prod B</text>
+            <text x="250" y="145" text-anchor="middle" fill="white" font-size="10">Comp C</text>
           </svg>
         </div>
         <div class="pattern-insight">
-          <strong>핵심:</strong> 계층적 커뮤니티 요약을 생성해서, "이 산업의 전반적 트렌드는?" 같은 넓은 질문에도 답할 수 있습니다.
+          <strong>Key point:</strong> Generates hierarchical community summaries, enabling answers to broad questions like "What are the overall trends in this industry?"
         </div>
       </div>
 
@@ -1068,24 +1061,24 @@
           <h4>RAPTOR</h4>
           <span class="paper-badge">Sarthi et al., ICLR 2024</span>
         </div>
-        <p><strong>재귀적 트리 요약</strong> — 문서 청크를 클러스터링하고 요약하는 과정을 반복해서 다단계 추상화 트리를 만듭니다.</p>
+        <p><strong>Recursive tree summarization</strong> — Repeatedly clusters and summarizes document chunks to build a multi-level abstraction tree.</p>
         <div class="raptor-tree">
           <div class="tree-level level-0">
-            <div class="tree-node summary">전체 요약</div>
+            <div class="tree-node summary">Overall Summary</div>
           </div>
           <div class="tree-level level-1">
-            <div class="tree-node cluster">클러스터 요약 A</div>
-            <div class="tree-node cluster">클러스터 요약 B</div>
+            <div class="tree-node cluster">Cluster Summary A</div>
+            <div class="tree-node cluster">Cluster Summary B</div>
           </div>
           <div class="tree-level level-2">
-            <div class="tree-node leaf">청크 1</div>
-            <div class="tree-node leaf">청크 2</div>
-            <div class="tree-node leaf">청크 3</div>
-            <div class="tree-node leaf">청크 4</div>
+            <div class="tree-node leaf">Chunk 1</div>
+            <div class="tree-node leaf">Chunk 2</div>
+            <div class="tree-node leaf">Chunk 3</div>
+            <div class="tree-node leaf">Chunk 4</div>
           </div>
         </div>
         <div class="pattern-insight">
-          <strong>성과:</strong> QuALITY 벤치마크에서 GPT-4 기반 <strong>+20%</strong> 향상. 세부 질문은 리프 노드에서, 요약 질문은 상위 노드에서 검색합니다.
+          <strong>Results:</strong> GPT-4 based <strong>+20%</strong> improvement on QuALITY benchmark. Detailed questions retrieve from leaf nodes; summary questions retrieve from upper nodes.
         </div>
       </div>
     </div>
@@ -1098,11 +1091,11 @@
     <div class="section-label">NEXT LEVEL</div>
     <h2 class="section-title">Agentic RAG</h2>
     <p class="section-desc">
-      AI Agent가 <strong>검색을 도구로 사용</strong>하면서 계획-실행-반성 루프를 돌리는 방식입니다.<br>
-      복잡한 멀티스텝 질문에 효과적입니다.
+      An AI Agent <strong>uses retrieval as a tool</strong> while running a plan-execute-reflect loop.<br>
+      Highly effective for complex multi-step questions.
     </p>
 
-    <!-- Agentic RAG 아키텍처 다이어그램 -->
+    <!-- Agentic RAG Architecture Diagram -->
     <div class="arch-diagram reveal">
       <svg class="arch-svg" viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -1126,7 +1119,7 @@
 
         <rect x="0" y="0" width="960" height="520" rx="16" fill="url(#agentGrad)"/>
 
-        <!-- 중앙: Agent Orchestrator -->
+        <!-- Center: Agent Orchestrator -->
         <rect x="340" y="160" width="280" height="200" rx="20" fill="#1e1e2a" stroke="#a78bfa" stroke-width="2.5"/>
         <rect x="340" y="160" width="280" height="44" rx="20" fill="#a78bfa" fill-opacity="0.15"/>
         <text x="480" y="187" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="800" letter-spacing="1">AGENT ORCHESTRATOR</text>
@@ -1134,17 +1127,17 @@
         <!-- Plan -->
         <rect x="365" y="220" width="105" height="50" rx="8" fill="#16161f" stroke="#a78bfa" stroke-opacity="0.6" stroke-width="1.5"/>
         <text x="417" y="242" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="700">Plan</text>
-        <text x="417" y="260" text-anchor="middle" fill="#9898a8" font-size="9">하위 작업 분해</text>
+        <text x="417" y="260" text-anchor="middle" fill="#9898a8" font-size="9">Decompose subtasks</text>
 
         <!-- Reason -->
         <rect x="490" y="220" width="105" height="50" rx="8" fill="#16161f" stroke="#22d3ee" stroke-opacity="0.6" stroke-width="1.5"/>
         <text x="542" y="242" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Reason</text>
-        <text x="542" y="260" text-anchor="middle" fill="#9898a8" font-size="9">판단 & 선택</text>
+        <text x="542" y="260" text-anchor="middle" fill="#9898a8" font-size="9">Judge & select</text>
 
         <!-- Reflect -->
         <rect x="420" y="286" width="120" height="50" rx="8" fill="#16161f" stroke="#fb923c" stroke-opacity="0.6" stroke-width="1.5"/>
         <text x="480" y="308" text-anchor="middle" fill="#fb923c" font-size="13" font-weight="700">Reflect</text>
-        <text x="480" y="326" text-anchor="middle" fill="#9898a8" font-size="9">자체 품질 평가</text>
+        <text x="480" y="326" text-anchor="middle" fill="#9898a8" font-size="9">Self quality assessment</text>
 
         <!-- Internal arrows -->
         <path d="M470 245 Q 480 250 490 245" fill="none" stroke="#6366f1" stroke-width="1" stroke-dasharray="3 2"/>
@@ -1156,93 +1149,93 @@
         <circle cx="75" cy="260" r="15" fill="#a78bfa" fill-opacity="0.2" stroke="#a78bfa" stroke-width="1.5"/>
         <text x="75" y="265" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="800">U</text>
         <text x="130" y="256" text-anchor="middle" fill="#e8e8ed" font-size="12" font-weight="700">Query</text>
-        <text x="130" y="274" text-anchor="middle" fill="#9898a8" font-size="9">복잡한 질문</text>
+        <text x="130" y="274" text-anchor="middle" fill="#9898a8" font-size="9">Complex question</text>
         <line x1="180" y1="260" x2="336" y2="260" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#aah)"/>
 
         <!-- Response (right) -->
         <rect x="780" y="230" width="140" height="60" rx="10" fill="#34d399" fill-opacity="0.1" stroke="#34d399" stroke-width="1.5"/>
         <text x="850" y="256" text-anchor="middle" fill="#34d399" font-size="14" font-weight="700">Response</text>
-        <text x="850" y="274" text-anchor="middle" fill="#9898a8" font-size="9">최종 답변 + 출처</text>
+        <text x="850" y="274" text-anchor="middle" fill="#9898a8" font-size="9">Final answer + sources</text>
         <line x1="620" y1="260" x2="776" y2="260" stroke="#34d399" stroke-width="1.5" marker-end="url(#aahG)"/>
-        <text x="698" y="252" fill="#34d399" font-size="9" font-weight="600">완료</text>
+        <text x="698" y="252" fill="#34d399" font-size="9" font-weight="600">Complete</text>
 
-        <!-- ===== Tools (아래) ===== -->
+        <!-- ===== Tools (bottom) ===== -->
         <text x="480" y="410" text-anchor="middle" fill="#9898a8" font-size="11" font-weight="600" letter-spacing="2">TOOLS</text>
 
         <!-- Tool: Vector Search -->
         <rect x="80" y="430" width="130" height="66" rx="10" fill="#1e1e2a" stroke="#6366f1" stroke-width="1.5"/>
         <text x="145" y="456" text-anchor="middle" fill="#6366f1" font-size="11" font-weight="700">Vector Search</text>
-        <text x="145" y="474" text-anchor="middle" fill="#9898a8" font-size="9">벡터 DB 검색</text>
-        <text x="145" y="488" text-anchor="middle" fill="#9898a8" font-size="9">시맨틱 매칭</text>
+        <text x="145" y="474" text-anchor="middle" fill="#9898a8" font-size="9">Vector DB search</text>
+        <text x="145" y="488" text-anchor="middle" fill="#9898a8" font-size="9">Semantic matching</text>
         <path d="M145 430 Q 145 400 340 360" fill="none" stroke="#6366f1" stroke-width="1.5" marker-end="url(#aah)"/>
 
         <!-- Tool: Web Search -->
         <rect x="240" y="430" width="130" height="66" rx="10" fill="#1e1e2a" stroke="#22d3ee" stroke-width="1.5"/>
         <text x="305" y="456" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="700">Web Search</text>
-        <text x="305" y="474" text-anchor="middle" fill="#9898a8" font-size="9">인터넷 검색</text>
-        <text x="305" y="488" text-anchor="middle" fill="#9898a8" font-size="9">실시간 정보</text>
+        <text x="305" y="474" text-anchor="middle" fill="#9898a8" font-size="9">Internet search</text>
+        <text x="305" y="488" text-anchor="middle" fill="#9898a8" font-size="9">Real-time info</text>
         <path d="M305 430 Q 350 400 420 360" fill="none" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#aahC)"/>
 
         <!-- Tool: SQL Query -->
         <rect x="400" y="430" width="130" height="66" rx="10" fill="#1e1e2a" stroke="#34d399" stroke-width="1.5"/>
         <text x="465" y="456" text-anchor="middle" fill="#34d399" font-size="11" font-weight="700">SQL Query</text>
-        <text x="465" y="474" text-anchor="middle" fill="#9898a8" font-size="9">구조화 데이터</text>
-        <text x="465" y="488" text-anchor="middle" fill="#9898a8" font-size="9">테이블 조회</text>
+        <text x="465" y="474" text-anchor="middle" fill="#9898a8" font-size="9">Structured data</text>
+        <text x="465" y="488" text-anchor="middle" fill="#9898a8" font-size="9">Table queries</text>
         <path d="M465 430 Q 480 400 480 362" fill="none" stroke="#34d399" stroke-width="1.5" marker-end="url(#aahG)"/>
 
         <!-- Tool: Code Exec -->
         <rect x="560" y="430" width="130" height="66" rx="10" fill="#1e1e2a" stroke="#fb923c" stroke-width="1.5"/>
         <text x="625" y="456" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="700">Code Exec</text>
-        <text x="625" y="474" text-anchor="middle" fill="#9898a8" font-size="9">코드 실행</text>
-        <text x="625" y="488" text-anchor="middle" fill="#9898a8" font-size="9">계산 & 분석</text>
+        <text x="625" y="474" text-anchor="middle" fill="#9898a8" font-size="9">Code execution</text>
+        <text x="625" y="488" text-anchor="middle" fill="#9898a8" font-size="9">Computation & analysis</text>
         <path d="M625 430 Q 580 400 540 360" fill="none" stroke="#fb923c" stroke-width="1.5"/>
 
         <!-- Tool: API Call -->
         <rect x="720" y="430" width="130" height="66" rx="10" fill="#1e1e2a" stroke="#f472b6" stroke-width="1.5"/>
         <text x="785" y="456" text-anchor="middle" fill="#f472b6" font-size="11" font-weight="700">API Call</text>
-        <text x="785" y="474" text-anchor="middle" fill="#9898a8" font-size="9">외부 서비스</text>
-        <text x="785" y="488" text-anchor="middle" fill="#9898a8" font-size="9">데이터 연동</text>
+        <text x="785" y="474" text-anchor="middle" fill="#9898a8" font-size="9">External services</text>
+        <text x="785" y="488" text-anchor="middle" fill="#9898a8" font-size="9">Data integration</text>
         <path d="M785 430 Q 700 390 620 360" fill="none" stroke="#f472b6" stroke-width="1.5"/>
 
-        <!-- ===== Memory (위 오른쪽) ===== -->
+        <!-- ===== Memory (top right) ===== -->
         <rect x="720" y="90" width="160" height="100" rx="12" fill="#1e1e2a" stroke="#f472b6" stroke-width="1.5"/>
         <text x="800" y="118" text-anchor="middle" fill="#f472b6" font-size="12" font-weight="700">Memory</text>
         <rect x="740" y="130" width="120" height="20" rx="4" fill="#16161f" stroke="#f472b6" stroke-opacity="0.3" stroke-width="1"/>
-        <text x="800" y="144" text-anchor="middle" fill="#9898a8" font-size="8">대화 이력</text>
+        <text x="800" y="144" text-anchor="middle" fill="#9898a8" font-size="8">Conversation history</text>
         <rect x="740" y="155" width="120" height="20" rx="4" fill="#16161f" stroke="#f472b6" stroke-opacity="0.3" stroke-width="1"/>
-        <text x="800" y="169" text-anchor="middle" fill="#9898a8" font-size="8">검색 캐시 / 중간 결과</text>
+        <text x="800" y="169" text-anchor="middle" fill="#9898a8" font-size="8">Search cache / intermediate results</text>
         <path d="M720 160 Q 650 170 620 180" fill="none" stroke="#f472b6" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#aahP)"/>
 
-        <!-- ===== Iteration Loop (왼쪽 위) ===== -->
+        <!-- ===== Iteration Loop (top left) ===== -->
         <rect x="80" y="80" width="180" height="90" rx="12" fill="#1e1e2a" stroke="#fb923c" stroke-width="1.5"/>
         <text x="170" y="108" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="700">Iteration Loop</text>
-        <text x="170" y="128" text-anchor="middle" fill="#9898a8" font-size="10">Step 1: 정보 수집</text>
-        <text x="170" y="145" text-anchor="middle" fill="#9898a8" font-size="10">Step 2: 분석 & 추론</text>
-        <text x="170" y="162" text-anchor="middle" fill="#9898a8" font-size="10">Step N: 답변 정제</text>
+        <text x="170" y="128" text-anchor="middle" fill="#9898a8" font-size="10">Step 1: Gather information</text>
+        <text x="170" y="145" text-anchor="middle" fill="#9898a8" font-size="10">Step 2: Analyze & reason</text>
+        <text x="170" y="162" text-anchor="middle" fill="#9898a8" font-size="10">Step N: Refine answer</text>
         <path d="M260 130 Q 310 130 340 185" fill="none" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#aah)"/>
 
-        <!-- 반복 루프 화살표 -->
+        <!-- Loop back arrow -->
         <path d="M340 340 Q 250 380 170 370 Q 100 360 100 300 Q 100 240 180 210" fill="none" stroke="#f87171" stroke-width="1.5" stroke-dasharray="6 4"/>
         <polygon points="180,210 172,220 185,218" fill="#f87171"/>
-        <text x="105" y="330" fill="#f87171" font-size="10" font-weight="600" transform="rotate(-90, 105, 330)">부족 시 재실행</text>
+        <text x="105" y="330" fill="#f87171" font-size="10" font-weight="600" transform="rotate(-90, 105, 330)">Re-run if insufficient</text>
       </svg>
     </div>
 
     <div class="agent-features reveal">
       <div class="agent-feature">
-        <h4>Multi-Agent 아키텍처</h4>
-        <p>검색 전문 에이전트, 요약 에이전트, 평가 에이전트 등 <strong>역할별로 분리</strong>된 에이전트들이 협력합니다. 모달리티별 전문가 에이전트(텍스트, 이미지, 테이블 등)를 둘 수도 있습니다.</p>
+        <h4>Multi-Agent Architecture</h4>
+        <p>Specialized agents for retrieval, summarization, evaluation, and more <strong>collaborate by role</strong>. You can also deploy modality-specific expert agents (text, image, table, etc.).</p>
       </div>
       <div class="agent-feature">
         <h4>Tool Use</h4>
-        <p>벡터 검색 외에도 <strong>웹 검색, SQL 쿼리, 계산기, 코드 실행</strong> 등 다양한 도구를 상황에 맞게 선택해서 사용합니다.</p>
+        <p>Beyond vector search, the agent selects and uses various tools like <strong>web search, SQL queries, calculators, and code execution</strong> as needed.</p>
       </div>
       <div class="agent-feature">
         <h4>Adaptive Retrieval</h4>
-        <p>모든 질문에 검색하지 않습니다. 질문 복잡도를 판단해서 <strong>단순 질문은 즉시 답변</strong>, 복잡한 질문만 멀티스텝 검색을 수행합니다.</p>
+        <p>Not every question triggers retrieval. The agent assesses question complexity: <strong>simple questions get immediate answers</strong>, while only complex questions go through multi-step retrieval.</p>
         <div class="technique-example">
-          <div class="example-before">"파이썬이 뭐야?" → 바로 답변</div>
-          <div class="example-after">"우리 회사의 3Q 매출을 작년 동기 대비 분석해줘" → 멀티스텝 검색</div>
+          <div class="example-before">"What is Python?" → Answer directly</div>
+          <div class="example-after">"Analyze our Q3 revenue compared to the same period last year" → Multi-step retrieval</div>
         </div>
       </div>
     </div>
@@ -1251,9 +1244,9 @@
     <div class="bonus-technique reveal">
       <div class="bonus-header">
         <h4>Speculative RAG</h4>
-        <span class="paper-badge">추가 기법</span>
+        <span class="paper-badge">Additional Technique</span>
       </div>
-      <p>작은 전문가 모델이 여러 개의 <strong>초안(draft)</strong>을 병렬로 생성하고, 큰 범용 모델이 이를 검증하는 방식. Draft-then-Verify 패턴으로 정확도와 지연시간 모두 개선합니다.</p>
+      <p>A small specialist model generates multiple <strong>drafts</strong> in parallel, and a larger generalist model verifies them. The Draft-then-Verify pattern improves both accuracy and latency.</p>
     </div>
   </div>
 </section>
@@ -1262,19 +1255,19 @@
 <section class="section section-dark" id="evaluation">
   <div class="container">
     <div class="section-label">EVALUATION</div>
-    <h2 class="section-title">RAG 평가하기</h2>
-    <p class="section-desc">RAG 시스템의 품질을 어떻게 측정할까요? 검색과 생성을 분리해서 각각 평가합니다.</p>
+    <h2 class="section-title">Evaluating RAG</h2>
+    <p class="section-desc">How do we measure the quality of a RAG system? We evaluate retrieval and generation separately.</p>
 
-    <!-- RAGAS 메트릭 -->
+    <!-- RAGAS Metrics -->
     <div class="metrics-grid reveal">
       <div class="metric-card">
         <div class="metric-header">
           <div class="metric-icon metric-faithfulness">F</div>
           <h4>Faithfulness</h4>
         </div>
-        <p>응답이 검색된 문서에 <strong>충실한가?</strong> 지어낸 내용 없이 문서 내용만으로 답변하는지 측정합니다.</p>
+        <p>Is the response <strong>faithful</strong> to the retrieved documents? Measures whether the answer is based solely on document content without fabrication.</p>
         <div class="metric-formula">
-          <code>충실도 = 문서로 뒷받침되는 주장 수 / 전체 주장 수</code>
+          <code>Faithfulness = Claims supported by documents / Total claims</code>
         </div>
       </div>
       <div class="metric-card">
@@ -1282,9 +1275,9 @@
           <div class="metric-icon metric-relevancy">R</div>
           <h4>Answer Relevancy</h4>
         </div>
-        <p>응답이 질문에 <strong>적절한가?</strong> 질문과 관련 없는 내용이 답변에 포함되지 않았는지 평가합니다.</p>
+        <p>Is the response <strong>relevant</strong> to the question? Evaluates whether irrelevant content is included in the answer.</p>
         <div class="metric-formula">
-          <code>관련도 = 응답에서 생성된 질문과 원래 질문의 유사도 평균</code>
+          <code>Relevancy = Average similarity between generated questions from response and original question</code>
         </div>
       </div>
       <div class="metric-card">
@@ -1292,9 +1285,9 @@
           <div class="metric-icon metric-precision">P</div>
           <h4>Context Precision</h4>
         </div>
-        <p>검색된 문서가 <strong>정밀한가?</strong> 관련 없는 문서가 너무 많이 포함되지 않았는지 확인합니다.</p>
+        <p>Are the retrieved documents <strong>precise</strong>? Checks whether too many irrelevant documents are included.</p>
         <div class="metric-formula">
-          <code>정밀도 = 관련 문서 수 / 검색된 전체 문서 수</code>
+          <code>Precision = Relevant documents / Total retrieved documents</code>
         </div>
       </div>
       <div class="metric-card">
@@ -1302,35 +1295,35 @@
           <div class="metric-icon metric-recall">C</div>
           <h4>Context Recall</h4>
         </div>
-        <p>필요한 문서를 <strong>빠짐없이</strong> 검색했는가? 정답에 필요한 정보가 모두 검색 결과에 포함되었는지 봅니다.</p>
+        <p>Were all necessary documents retrieved <strong>without omission</strong>? Checks whether all information needed for the correct answer is included in the search results.</p>
         <div class="metric-formula">
-          <code>재현율 = 검색된 관련 문서 수 / 전체 관련 문서 수</code>
+          <code>Recall = Retrieved relevant documents / Total relevant documents</code>
         </div>
       </div>
     </div>
 
-    <!-- 평가 도구 -->
-    <h3 class="subsection-title reveal">평가 도구</h3>
+    <!-- Evaluation Tools -->
+    <h3 class="subsection-title reveal">Evaluation Tools</h3>
     <div class="tool-cards reveal">
       <div class="tool-card">
         <h4>RAGAS</h4>
-        <p>가장 대표적인 오픈소스 평가 프레임워크. Faithfulness, Relevancy, Context Precision/Recall 등 핵심 메트릭을 자동으로 계산합니다.</p>
-        <span class="tool-tag">오픈소스</span>
+        <p>The most popular open-source evaluation framework. Automatically computes core metrics like Faithfulness, Relevancy, Context Precision/Recall.</p>
+        <span class="tool-tag">Open Source</span>
       </div>
       <div class="tool-card">
         <h4>DeepEval</h4>
-        <p>CI/CD 파이프라인에 통합 가능한 유닛 테스트 스타일 평가. pytest처럼 RAG 평가를 자동화합니다.</p>
-        <span class="tool-tag">CI/CD 통합</span>
+        <p>Unit-test style evaluation that integrates into CI/CD pipelines. Automates RAG evaluation just like pytest.</p>
+        <span class="tool-tag">CI/CD Integration</span>
       </div>
       <div class="tool-card">
         <h4>TruLens</h4>
-        <p>프로덕션 환경에서 실시간 모니터링. 피드백 함수로 지속적인 품질 추적이 가능합니다.</p>
-        <span class="tool-tag">프로덕션 모니터링</span>
+        <p>Real-time monitoring for production environments. Enables continuous quality tracking with feedback functions.</p>
+        <span class="tool-tag">Production Monitoring</span>
       </div>
       <div class="tool-card">
         <h4>RAGBench</h4>
-        <p>12개 도메인에 걸친 100K+ 예제 벤치마크. 산업별 RAG 성능 비교에 활용됩니다.</p>
-        <span class="tool-tag">벤치마크</span>
+        <p>A benchmark with 100K+ examples across 12 domains. Used for comparing RAG performance across industries.</p>
+        <span class="tool-tag">Benchmark</span>
       </div>
     </div>
   </div>
@@ -1340,12 +1333,12 @@
 <section class="section" id="best-practices">
   <div class="container">
     <div class="section-label">PRACTICE</div>
-    <h2 class="section-title">실전 가이드</h2>
-    <p class="section-desc">RAG 시스템을 실무에 적용할 때의 권장 사항과 로드맵입니다.</p>
+    <h2 class="section-title">Practical Guide</h2>
+    <p class="section-desc">Recommendations and a roadmap for applying RAG systems in production.</p>
 
-    <!-- 추천 스택 -->
+    <!-- Recommended Stack -->
     <div class="stack-section reveal">
-      <h3 class="subsection-title">추천 프로덕션 스택</h3>
+      <h3 class="subsection-title">Recommended Production Stack</h3>
       <div class="stack-diagram">
         <div class="stack-layer stack-app">
           <span class="stack-label">Application</span>
@@ -1374,9 +1367,9 @@
       </div>
     </div>
 
-    <!-- 도입 로드맵 -->
+    <!-- Adoption Roadmap -->
     <div class="roadmap-section reveal">
-      <h3 class="subsection-title">단계별 도입 로드맵</h3>
+      <h3 class="subsection-title">Step-by-Step Adoption Roadmap</h3>
       <div class="roadmap">
         <div class="roadmap-step">
           <div class="roadmap-marker">
@@ -1384,7 +1377,7 @@
           </div>
           <div class="roadmap-content">
             <h4>MVP: Naive RAG</h4>
-            <p>기본 파이프라인 구축. 고정 크기 청킹 + 단순 벡터 검색 + LLM 생성. <strong>빠르게 가치를 증명</strong>하는 것이 목표.</p>
+            <p>Build a basic pipeline. Fixed-size chunking + simple vector search + LLM generation. The goal is to <strong>quickly prove value</strong>.</p>
           </div>
         </div>
         <div class="roadmap-step">
@@ -1392,8 +1385,8 @@
             <span>2</span>
           </div>
           <div class="roadmap-content">
-            <h4>품질 향상: Hybrid + Reranker</h4>
-            <p>BM25 + Dense 하이브리드 검색 도입. Reranker 추가. 이것만으로도 <strong>상당한 품질 향상</strong>을 볼 수 있습니다.</p>
+            <h4>Quality Boost: Hybrid + Reranker</h4>
+            <p>Introduce BM25 + Dense hybrid search. Add a Reranker. This alone can deliver <strong>significant quality improvements</strong>.</p>
           </div>
         </div>
         <div class="roadmap-step">
@@ -1401,8 +1394,8 @@
             <span>3</span>
           </div>
           <div class="roadmap-content">
-            <h4>청킹 최적화</h4>
-            <p>Recursive/Semantic 청킹 적용. Contextual Retrieval로 청크에 맥락 추가. 메타데이터 태깅.</p>
+            <h4>Chunking Optimization</h4>
+            <p>Apply Recursive/Semantic chunking. Add context to chunks with Contextual Retrieval. Metadata tagging.</p>
           </div>
         </div>
         <div class="roadmap-step">
@@ -1410,8 +1403,8 @@
             <span>4</span>
           </div>
           <div class="roadmap-content">
-            <h4>평가 체계 구축</h4>
-            <p>RAGAS 등으로 자동 평가 파이프라인 구축. 정량적 메트릭으로 개선 효과를 측정합니다.</p>
+            <h4>Build an Evaluation Framework</h4>
+            <p>Build an automated evaluation pipeline with RAGAS and similar tools. Measure improvement effects with quantitative metrics.</p>
           </div>
         </div>
         <div class="roadmap-step">
@@ -1419,89 +1412,89 @@
             <span>5</span>
           </div>
           <div class="roadmap-content">
-            <h4>고도화: Modular / Agentic</h4>
-            <p>멀티스텝 질문, 멀티소스 시나리오가 필요할 때. 라우터, 반복 검색, 에이전트 패턴 도입.</p>
+            <h4>Advanced: Modular / Agentic</h4>
+            <p>When multi-step questions and multi-source scenarios are needed. Introduce routers, iterative retrieval, and agent patterns.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 청킹 비교 테이블 -->
+    <!-- Chunking Comparison Table -->
     <div class="table-section reveal">
-      <h3 class="subsection-title">청킹 전략 비교</h3>
+      <h3 class="subsection-title">Chunking Strategy Comparison</h3>
       <div class="table-wrapper">
         <table class="comparison-table">
           <thead>
             <tr>
-              <th>전략</th>
-              <th>방식</th>
-              <th>장점</th>
-              <th>단점</th>
-              <th>추천 상황</th>
+              <th>Strategy</th>
+              <th>Method</th>
+              <th>Pros</th>
+              <th>Cons</th>
+              <th>Recommended For</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><strong>Fixed-size</strong></td>
-              <td>고정 토큰 수로 분할</td>
-              <td>구현 간단, 예측 가능</td>
-              <td>문맥 단절</td>
-              <td>빠른 프로토타입</td>
+              <td>Split by fixed token count</td>
+              <td>Simple to implement, predictable</td>
+              <td>Context breakage</td>
+              <td>Quick prototypes</td>
             </tr>
             <tr>
               <td><strong>Recursive</strong></td>
-              <td>구분자 계층으로 재귀 분할</td>
-              <td>안정적 (69% 승률)</td>
-              <td>구분자 설정 필요</td>
-              <td>범용 (기본 추천)</td>
+              <td>Recursively split using separator hierarchy</td>
+              <td>Stable (69% win rate)</td>
+              <td>Requires separator configuration</td>
+              <td>General purpose (default recommendation)</td>
             </tr>
             <tr>
               <td><strong>Semantic</strong></td>
-              <td>의미 변화 지점에서 분할</td>
-              <td>높은 재현율</td>
-              <td>조각이 너무 작을 수 있음</td>
-              <td>다주제 문서</td>
+              <td>Split at semantic shift points</td>
+              <td>High recall</td>
+              <td>Chunks may be too small</td>
+              <td>Multi-topic documents</td>
             </tr>
             <tr>
               <td><strong>Parent-Child</strong></td>
-              <td>작은 청크로 검색, 큰 청크 반환</td>
-              <td>정밀 검색 + 풍부한 컨텍스트</td>
-              <td>인덱스 복잡도 증가</td>
-              <td>긴 문서, 보고서</td>
+              <td>Search with small chunks, return large chunks</td>
+              <td>Precise search + rich context</td>
+              <td>Increased index complexity</td>
+              <td>Long documents, reports</td>
             </tr>
             <tr>
               <td><strong>Sentence Window</strong></td>
-              <td>문장 단위 + 주변 문장</td>
-              <td>문장 수준 정밀도</td>
-              <td>짧은 문서엔 비효율</td>
-              <td>FAQ, 매뉴얼</td>
+              <td>Sentence-level + surrounding sentences</td>
+              <td>Sentence-level precision</td>
+              <td>Inefficient for short documents</td>
+              <td>FAQs, manuals</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- 핵심 팁 -->
+    <!-- Key Tips -->
     <div class="tips-grid reveal">
       <div class="tip-card">
         <div class="tip-icon">💡</div>
-        <h4>256~512 토큰이 최적</h4>
-        <p>청크 크기는 256~512 토큰이 가장 안정적. 너무 작으면 맥락 부족, 너무 크면 노이즈 증가.</p>
+        <h4>256~512 Tokens is Optimal</h4>
+        <p>Chunk sizes of 256~512 tokens are the most stable. Too small means insufficient context, too large increases noise.</p>
       </div>
       <div class="tip-card">
         <div class="tip-icon">🎯</div>
-        <h4>검색 최적화가 먼저</h4>
-        <p>LLM을 바꾸기 전에 검색 품질을 올리세요. 같은 모델에서 검색만 개선해도 <strong>50%+</strong> 정확도 향상 가능.</p>
+        <h4>Optimize Retrieval First</h4>
+        <p>Before switching LLMs, improve retrieval quality. Improving retrieval alone with the same model can yield <strong>50%+</strong> accuracy improvement.</p>
       </div>
       <div class="tip-card">
         <div class="tip-icon">📊</div>
-        <h4>측정 없이 개선 없음</h4>
-        <p>평가 파이프라인을 먼저 만들고, 변경할 때마다 메트릭을 비교하세요. 감이 아닌 데이터로 결정.</p>
+        <h4>No Measurement, No Improvement</h4>
+        <p>Build the evaluation pipeline first, and compare metrics with every change. Make decisions based on data, not intuition.</p>
       </div>
       <div class="tip-card">
         <div class="tip-icon">🔄</div>
-        <h4>RAG는 제품이다</h4>
-        <p>한 번 만들고 끝이 아닙니다. KPI를 설정하고 지속적으로 개선하세요. 문서 업데이트, 모델 교체, 파이프라인 조정.</p>
+        <h4>RAG is a Product</h4>
+        <p>It's not a one-time build. Set KPIs and continuously improve. Update documents, swap models, tune pipelines.</p>
       </div>
     </div>
   </div>
@@ -1511,8 +1504,8 @@
 <section class="section section-dark" id="papers">
   <div class="container">
     <div class="section-label">REFERENCES</div>
-    <h2 class="section-title">주요 논문 타임라인</h2>
-    <p class="section-desc">RAG 연구의 핵심 논문들을 시간순으로 정리했습니다.</p>
+    <h2 class="section-title">Key Papers Timeline</h2>
+    <p class="section-desc">A chronological overview of the essential papers in RAG research.</p>
 
     <div class="papers-timeline reveal">
       <div class="paper-item">
@@ -1520,7 +1513,7 @@
         <div class="paper-content">
           <h4>RAG: Retrieval-Augmented Generation</h4>
           <p class="paper-authors">Lewis et al. — NeurIPS 2020</p>
-          <p>DPR + BART 결합. RAG-Sequence, RAG-Token 두 변형 제안. RAG 연구의 시작점.</p>
+          <p>Combines DPR + BART. Proposed two variants: RAG-Sequence and RAG-Token. The starting point of RAG research.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1528,7 +1521,7 @@
         <div class="paper-content">
           <h4>Dense Passage Retrieval (DPR)</h4>
           <p class="paper-authors">Karpukhin et al. — EMNLP 2020</p>
-          <p>밀집 벡터 기반 문서 검색의 표준. 기존 TF-IDF/BM25를 뛰어넘는 시맨틱 검색 실현.</p>
+          <p>The standard for dense vector-based document retrieval. Achieved semantic search surpassing traditional TF-IDF/BM25.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1536,7 +1529,7 @@
         <div class="paper-content">
           <h4>HyDE: Hypothetical Document Embeddings</h4>
           <p class="paper-authors">Gao et al., 2022</p>
-          <p>질문 대신 가상 답변을 생성해서 검색. Zero-shot에서도 Fine-tuned 모델 수준의 검색 성능 달성.</p>
+          <p>Generates a hypothetical answer instead of using the question directly for retrieval. Achieves fine-tuned model-level retrieval performance even in zero-shot settings.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1544,7 +1537,7 @@
         <div class="paper-content">
           <h4>Self-RAG: Self-Reflective RAG</h4>
           <p class="paper-authors">Asai et al. — ICLR 2024 (Oral)</p>
-          <p>Reflection Token으로 검색 필요 여부, 문서 관련성, 응답 품질을 LLM이 자체 판단.</p>
+          <p>Uses Reflection Tokens for the LLM to self-assess retrieval necessity, document relevance, and response quality.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1552,7 +1545,7 @@
         <div class="paper-content">
           <h4>CRAG: Corrective RAG</h4>
           <p class="paper-authors">Yan et al., 2024</p>
-          <p>검색 결과를 Correct/Incorrect/Ambiguous로 분류 후 보정 경로 선택. 19~37% 정확도 향상.</p>
+          <p>Classifies retrieval results as Correct/Incorrect/Ambiguous and selects correction paths. 19~37% accuracy improvement.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1560,7 +1553,7 @@
         <div class="paper-content">
           <h4>RAPTOR: Recursive Abstractive Processing</h4>
           <p class="paper-authors">Sarthi et al. — ICLR 2024</p>
-          <p>재귀적 클러스터링 + 요약으로 다단계 추상화 트리 구축. QuALITY에서 +20% 향상.</p>
+          <p>Builds a multi-level abstraction tree through recursive clustering + summarization. +20% improvement on QuALITY.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1568,7 +1561,7 @@
         <div class="paper-content">
           <h4>GraphRAG</h4>
           <p class="paper-authors">Microsoft Research, 2024</p>
-          <p>지식 그래프 + 계층적 커뮤니티 요약. 여러 문서에 걸친 글로벌 질문에 강점.</p>
+          <p>Knowledge graph + hierarchical community summaries. Excels at global questions spanning multiple documents.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1576,7 +1569,7 @@
         <div class="paper-content">
           <h4>Contextual Retrieval</h4>
           <p class="paper-authors">Anthropic, 2024</p>
-          <p>청크에 문서 수준 맥락을 접두사로 추가. BM25와 결합 시 검색 실패율 67% 감소.</p>
+          <p>Adds document-level context as a prefix to chunks. Combined with BM25, reduces retrieval failure rate by 67%.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1584,7 +1577,7 @@
         <div class="paper-content">
           <h4>Adaptive RAG</h4>
           <p class="paper-authors">Jeong et al., 2024</p>
-          <p>질문 복잡도에 따라 No Retrieval / Single-step / Multi-step을 동적으로 선택.</p>
+          <p>Dynamically selects No Retrieval / Single-step / Multi-step based on question complexity.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1592,7 +1585,7 @@
         <div class="paper-content">
           <h4>Late Chunking</h4>
           <p class="paper-authors">Jina AI, 2024</p>
-          <p>전체 문서를 먼저 임베딩 → 토큰 벡터에서 청크 추출. 추가 LLM 비용 없이 문맥 보존. jina-v3에서 API 지원.</p>
+          <p>Embeds the full document first, then extracts chunks from token vectors. Preserves context without additional LLM cost. API support in jina-v3.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1600,7 +1593,7 @@
         <div class="paper-content">
           <h4>RAFT (Retrieval Augmented Fine-Tuning)</h4>
           <p class="paper-authors">UC Berkeley, 2024</p>
-          <p>RAG + Fine-tuning 결합. 방해 문서를 무시하도록 학습. 전문 도메인에서 순수 RAG보다 높은 성능.</p>
+          <p>Combines RAG + Fine-tuning. Trains the model to ignore distractor documents. Outperforms pure RAG in specialized domains.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1608,7 +1601,7 @@
         <div class="paper-content">
           <h4>SimRAG (Self-Improving RAG)</h4>
           <p class="paper-authors">NAACL 2025</p>
-          <p>비라벨 코퍼스에서 자체 QA 쌍 생성 + self-training. 라벨링 비용 없이 도메인 적응. 11개 데이터셋 검증.</p>
+          <p>Generates self-training QA pairs from unlabeled corpora. Domain adaptation without labeling costs. Validated on 11 datasets.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1616,7 +1609,7 @@
         <div class="paper-content">
           <h4>MCP (Model Context Protocol)</h4>
           <p class="paper-authors">Anthropic, 2025</p>
-          <p>AI 모델과 외부 도구/데이터를 연결하는 오픈 표준 프로토콜. Agentic RAG의 도구 통합을 표준화.</p>
+          <p>An open standard protocol connecting AI models with external tools and data. Standardizes tool integration for Agentic RAG.</p>
         </div>
       </div>
       <div class="paper-item">
@@ -1624,7 +1617,7 @@
         <div class="paper-content">
           <h4>Context Engineering & Knowledge Runtime</h4>
           <p class="paper-authors">Industry Paradigm Shift</p>
-          <p>RAG → Context Engineering으로 패러다임 확장. RAG(정적 지식) + Memory(동적 이력) + MCP(도구 연결)를 통합하는 Knowledge Runtime 개념 등장.</p>
+          <p>The paradigm expands from RAG to Context Engineering. The Knowledge Runtime concept emerges, integrating RAG (static knowledge) + Memory (dynamic history) + MCP (tool connectivity).</p>
         </div>
       </div>
     </div>
@@ -1636,14 +1629,14 @@
   <div class="container">
     <div class="footer-content">
       <div class="footer-logo">RAG<span class="accent">Guide</span></div>
-      <p>Retrieval-Augmented Generation 완전 가이드</p>
+      <p>The Complete Guide to Retrieval-Augmented Generation</p>
       <div class="footer-note">
-        이 가이드의 내용은 공개된 연구 논문과 기술 문서를 기반으로 작성되었습니다.
+        The content of this guide is based on publicly available research papers and technical documentation.
       </div>
     </div>
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script src="../script.js"></script>
 </body>
 </html>

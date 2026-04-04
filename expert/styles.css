@@ -261,6 +261,16 @@ pre { font-family: var(--mono); font-size: 0.82em; line-height: 1.6; padding: 12
   .pattern-grid { grid-template-columns: 1fr; }
 }
 
+/* ====== LANG SWITCH ====== */
+.lang-switch { font-family:var(--mono); font-size:.72rem; font-weight:700; color:var(--text3); background:var(--bg-card); border:1px solid var(--border); padding:4px 12px; border-radius:6px; margin-left:12px; transition:all .2s; flex-shrink:0; }
+.lang-switch:hover { color:var(--text); border-color:var(--purple); background:rgba(99,102,241,.1); }
+
+/* ====== LANG TOGGLE ====== */
+.lang-toggle { display:flex; gap:2px; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:2px; margin-left:12px; flex-shrink:0; }
+.lang-btn { font-family:var(--mono); font-size:.7rem; font-weight:600; padding:4px 10px; border:none; border-radius:6px; background:none; color:var(--text3); cursor:pointer; transition:all .2s; }
+.lang-btn.active { background:var(--blue); color:white; }
+.lang-btn:hover:not(.active) { color:var(--text); background:rgba(255,255,255,.05); }
+
 ::selection { background: rgba(99,102,241,.3); }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
