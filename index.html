@@ -291,35 +291,136 @@
     <h2 class="section-title">Naive RAG</h2>
     <p class="section-desc">가장 기본적인 "Retrieve → Read" 파이프라인. RAG의 출발점이지만, 한계가 분명합니다.</p>
 
-    <!-- Naive RAG 파이프라인 다이어그램 -->
-    <div class="naive-pipeline reveal">
-      <div class="naive-step">
-        <div class="naive-icon">
-          <svg viewBox="0 0 48 48" fill="none"><rect x="6" y="6" width="36" height="36" rx="8" stroke="currentColor" stroke-width="2"/><path d="M16 18h16M16 24h16M16 30h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <h4>1. 문서 준비</h4>
-        <p>문서를 고정 크기로 쪼개고(청킹) 임베딩 벡터로 변환해서 벡터 DB에 저장</p>
-      </div>
-      <div class="naive-arrow-down">
-        <svg viewBox="0 0 24 48"><path d="M12 0v40M4 32l8 8 8-8" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-      </div>
-      <div class="naive-step">
-        <div class="naive-icon">
-          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="20" r="12" stroke="currentColor" stroke-width="2"/><path d="M28 28l12 12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-        </div>
-        <h4>2. 검색</h4>
-        <p>사용자 질문을 임베딩 → 벡터 DB에서 코사인 유사도가 높은 상위 k개 문서 조회</p>
-      </div>
-      <div class="naive-arrow-down">
-        <svg viewBox="0 0 24 48"><path d="M12 0v40M4 32l8 8 8-8" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-      </div>
-      <div class="naive-step">
-        <div class="naive-icon">
-          <svg viewBox="0 0 48 48" fill="none"><path d="M8 12h32v28H8z" stroke="currentColor" stroke-width="2"/><path d="M8 12l16-6 16 6" stroke="currentColor" stroke-width="2"/><path d="M16 24h16M16 30h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <h4>3. 생성</h4>
-        <p>검색된 문서를 프롬프트에 붙여서 LLM에 전달 → 답변 생성</p>
-      </div>
+    <!-- Naive RAG 아키텍처 다이어그램 -->
+    <div class="arch-diagram reveal">
+      <svg class="arch-svg" viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="naiveGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#6366f1" stop-opacity="0.1"/>
+          </linearGradient>
+          <linearGradient id="naiveGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#6366f1" stop-opacity="0.1"/>
+          </linearGradient>
+          <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#a78bfa"/>
+            <stop offset="100%" stop-color="#6366f1"/>
+          </linearGradient>
+          <marker id="arrowHead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa"/>
+          </marker>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- 배경 영역: Indexing Phase -->
+        <rect x="20" y="20" width="440" height="480" rx="16" fill="url(#naiveGrad1)" stroke="#a78bfa" stroke-opacity="0.2" stroke-width="1"/>
+        <text x="40" y="52" fill="#a78bfa" font-size="12" font-weight="600" font-family="monospace" letter-spacing="2">INDEXING PHASE (오프라인)</text>
+
+        <!-- 배경 영역: Query Phase -->
+        <rect x="500" y="20" width="440" height="480" rx="16" fill="url(#naiveGrad2)" stroke="#22d3ee" stroke-opacity="0.2" stroke-width="1"/>
+        <text x="520" y="52" fill="#22d3ee" font-size="12" font-weight="600" font-family="monospace" letter-spacing="2">QUERY PHASE (온라인)</text>
+
+        <!-- ===== INDEXING: Documents ===== -->
+        <rect x="60" y="80" width="160" height="64" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="140" y="106" text-anchor="middle" fill="#e8e8ed" font-size="14" font-weight="700">Documents</text>
+        <text x="140" y="126" text-anchor="middle" fill="#9898a8" font-size="11">PDF, DB, Web, API</text>
+
+        <!-- Arrow: Documents → Chunking -->
+        <line x1="140" y1="144" x2="140" y2="178" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrowHead)"/>
+
+        <!-- INDEXING: Chunking -->
+        <rect x="60" y="180" width="160" height="64" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="140" y="206" text-anchor="middle" fill="#e8e8ed" font-size="14" font-weight="700">Chunking</text>
+        <text x="140" y="226" text-anchor="middle" fill="#9898a8" font-size="11">고정 크기 분할</text>
+
+        <!-- Chunk 시각화 -->
+        <rect x="260" y="186" width="60" height="18" rx="4" fill="#a78bfa" fill-opacity="0.25" stroke="#a78bfa" stroke-width="1"/>
+        <text x="290" y="199" text-anchor="middle" fill="#a78bfa" font-size="9" font-weight="500">Chunk 1</text>
+        <rect x="260" y="208" width="60" height="18" rx="4" fill="#a78bfa" fill-opacity="0.15" stroke="#a78bfa" stroke-width="1"/>
+        <text x="290" y="221" text-anchor="middle" fill="#a78bfa" font-size="9" font-weight="500">Chunk 2</text>
+        <rect x="260" y="230" width="60" height="18" rx="4" fill="#a78bfa" fill-opacity="0.1" stroke="#a78bfa" stroke-width="1"/>
+        <text x="290" y="243" text-anchor="middle" fill="#a78bfa" font-size="9" font-weight="500">Chunk N</text>
+        <line x1="220" y1="212" x2="256" y2="212" stroke="#a78bfa" stroke-width="1" stroke-dasharray="4 3"/>
+
+        <!-- Arrow: Chunking → Embedding -->
+        <line x1="140" y1="244" x2="140" y2="278" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrowHead)"/>
+
+        <!-- INDEXING: Embedding Model -->
+        <rect x="60" y="280" width="160" height="64" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="140" y="306" text-anchor="middle" fill="#e8e8ed" font-size="14" font-weight="700">Embedding Model</text>
+        <text x="140" y="326" text-anchor="middle" fill="#9898a8" font-size="11">텍스트 → 벡터 변환</text>
+
+        <!-- 벡터 시각화 -->
+        <rect x="260" y="290" width="140" height="40" rx="6" fill="#16161f" stroke="#a78bfa" stroke-opacity="0.3" stroke-width="1"/>
+        <text x="270" y="310" fill="#a78bfa" font-size="9" font-family="monospace">[0.12, -0.45, 0.78,</text>
+        <text x="270" y="322" fill="#a78bfa" font-size="9" font-family="monospace"> 0.33, -0.91, ...]</text>
+        <line x1="220" y1="312" x2="256" y2="310" stroke="#a78bfa" stroke-width="1" stroke-dasharray="4 3"/>
+
+        <!-- Arrow: Embedding → Vector DB -->
+        <line x1="140" y1="344" x2="140" y2="378" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrowHead)"/>
+
+        <!-- INDEXING: Vector DB -->
+        <rect x="60" y="380" width="160" height="80" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="2"/>
+        <ellipse cx="140" cy="400" rx="60" ry="12" fill="none" stroke="#a78bfa" stroke-width="1.5"/>
+        <path d="M80 400 v30 c0 6.6 26.9 12 60 12 s60-5.4 60-12 v-30" fill="none" stroke="#a78bfa" stroke-width="1.5"/>
+        <ellipse cx="140" cy="430" rx="60" ry="12" fill="none" stroke="#a78bfa" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="140" y="455" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="600">Vector DB</text>
+
+        <!-- ===== QUERY PHASE ===== -->
+        <!-- User Query -->
+        <rect x="540" y="80" width="160" height="64" rx="10" fill="#1e1e2a" stroke="#22d3ee" stroke-width="1.5"/>
+        <circle cx="570" cy="112" r="16" fill="#22d3ee" fill-opacity="0.15" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="570" y="117" text-anchor="middle" fill="#22d3ee" font-size="14" font-weight="800">?</text>
+        <text x="650" y="106" text-anchor="middle" fill="#e8e8ed" font-size="14" font-weight="700">User Query</text>
+        <text x="650" y="126" text-anchor="middle" fill="#9898a8" font-size="11">사용자 질문 입력</text>
+
+        <!-- Arrow: Query → Embed Query -->
+        <line x1="620" y1="144" x2="620" y2="178" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrowHead)"/>
+
+        <!-- Embed Query -->
+        <rect x="540" y="180" width="160" height="50" rx="10" fill="#1e1e2a" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="620" y="206" text-anchor="middle" fill="#e8e8ed" font-size="13" font-weight="600">Query Embedding</text>
+        <text x="620" y="222" text-anchor="middle" fill="#9898a8" font-size="10">질문도 벡터로 변환</text>
+
+        <!-- Arrow: Embed → Similarity Search -->
+        <line x1="620" y1="230" x2="620" y2="268" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrowHead)"/>
+
+        <!-- Similarity Search (connects to Vector DB) -->
+        <rect x="540" y="270" width="160" height="64" rx="10" fill="#1e1e2a" stroke="#6366f1" stroke-width="2" filter="url(#glow)"/>
+        <text x="620" y="296" text-anchor="middle" fill="#e8e8ed" font-size="14" font-weight="700">Similarity Search</text>
+        <text x="620" y="316" text-anchor="middle" fill="#9898a8" font-size="11">코사인 유사도 Top-K</text>
+
+        <!-- Connection: Vector DB ←→ Similarity Search -->
+        <path d="M220 420 Q 380 420 380 302 Q 380 302 536 302" fill="none" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrowHead)"/>
+        <text x="380" y="370" text-anchor="middle" fill="#6366f1" font-size="10" font-weight="500">벡터 검색</text>
+
+        <!-- Arrow: Search → Prompt -->
+        <line x1="620" y1="334" x2="620" y2="368" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrowHead)"/>
+
+        <!-- Prompt Assembly -->
+        <rect x="540" y="370" width="160" height="50" rx="10" fill="#1e1e2a" stroke="#34d399" stroke-width="1.5"/>
+        <text x="620" y="394" text-anchor="middle" fill="#e8e8ed" font-size="13" font-weight="600">Prompt + Context</text>
+        <text x="620" y="410" text-anchor="middle" fill="#9898a8" font-size="10">질문 + 검색 문서 결합</text>
+
+        <!-- Arrow: Prompt → LLM -->
+        <line x1="700" y1="395" x2="760" y2="395" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrowHead)"/>
+
+        <!-- LLM -->
+        <rect x="762" y="360" width="150" height="70" rx="14" fill="#1e1e2a" stroke="#fb923c" stroke-width="2"/>
+        <text x="837" y="390" text-anchor="middle" fill="#fb923c" font-size="22" font-weight="800">LLM</text>
+        <text x="837" y="415" text-anchor="middle" fill="#9898a8" font-size="10">응답 생성</text>
+
+        <!-- Arrow: LLM → Response -->
+        <line x1="837" y1="430" x2="837" y2="468" stroke="#fb923c" stroke-width="1.5" marker-end="url(#arrowHead)"/>
+
+        <!-- Response -->
+        <rect x="762" y="470" width="150" height="24" rx="6" fill="#fb923c" fill-opacity="0.15" stroke="#fb923c" stroke-width="1"/>
+        <text x="837" y="487" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="600">Response (답변)</text>
+      </svg>
     </div>
 
     <!-- 한계점 -->
@@ -355,6 +456,171 @@
     <div class="section-label">STAGE 2</div>
     <h2 class="section-title">Advanced RAG</h2>
     <p class="section-desc">Naive RAG의 한계를 검색 <strong>전/중/후</strong> 각 단계에서 체계적으로 보완합니다.</p>
+
+    <!-- Advanced RAG 아키텍처 다이어그램 -->
+    <div class="arch-diagram reveal">
+      <svg class="arch-svg" viewBox="0 0 960 440" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="advGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.08"/>
+            <stop offset="50%" stop-color="#6366f1" stop-opacity="0.12"/>
+            <stop offset="100%" stop-color="#22d3ee" stop-opacity="0.08"/>
+          </linearGradient>
+          <marker id="ah2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#a78bfa"/>
+          </marker>
+          <marker id="ah3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#22d3ee"/>
+          </marker>
+          <marker id="ah4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#34d399"/>
+          </marker>
+        </defs>
+
+        <rect x="0" y="0" width="960" height="440" rx="16" fill="url(#advGrad)"/>
+
+        <!-- Phase Labels -->
+        <rect x="32" y="15" width="200" height="26" rx="6" fill="#a78bfa" fill-opacity="0.15"/>
+        <text x="132" y="33" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="700" letter-spacing="1">PRE-RETRIEVAL</text>
+        <rect x="310" y="15" width="200" height="26" rx="6" fill="#6366f1" fill-opacity="0.15"/>
+        <text x="410" y="33" text-anchor="middle" fill="#6366f1" font-size="11" font-weight="700" letter-spacing="1">RETRIEVAL</text>
+        <rect x="590" y="15" width="200" height="26" rx="6" fill="#22d3ee" fill-opacity="0.15"/>
+        <text x="690" y="33" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="700" letter-spacing="1">POST-RETRIEVAL</text>
+        <rect x="830" y="15" width="110" height="26" rx="6" fill="#fb923c" fill-opacity="0.15"/>
+        <text x="885" y="33" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="700" letter-spacing="1">GENERATE</text>
+
+        <!-- ===== PRE-RETRIEVAL ===== -->
+        <!-- User Query -->
+        <rect x="40" y="70" width="170" height="50" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="125" y="92" text-anchor="middle" fill="#e8e8ed" font-size="13" font-weight="700">User Query</text>
+        <text x="125" y="108" text-anchor="middle" fill="#9898a8" font-size="10">원본 질문</text>
+
+        <!-- Arrow down -->
+        <line x1="125" y1="120" x2="125" y2="148" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#ah2)"/>
+
+        <!-- Query Rewriting -->
+        <rect x="40" y="150" width="170" height="50" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="125" y="172" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="700">Query Rewriting</text>
+        <text x="125" y="189" text-anchor="middle" fill="#9898a8" font-size="10">질문 최적화 / 분해</text>
+
+        <!-- Branch: HyDE -->
+        <line x1="125" y1="200" x2="70" y2="228" stroke="#a78bfa" stroke-width="1" stroke-dasharray="4 3"/>
+        <rect x="20" y="230" width="100" height="36" rx="6" fill="#16161f" stroke="#a78bfa" stroke-opacity="0.5" stroke-width="1"/>
+        <text x="70" y="252" text-anchor="middle" fill="#a78bfa" font-size="10" font-weight="500">HyDE</text>
+
+        <!-- Branch: Multi-Query -->
+        <line x1="125" y1="200" x2="180" y2="228" stroke="#a78bfa" stroke-width="1" stroke-dasharray="4 3"/>
+        <rect x="130" y="230" width="100" height="36" rx="6" fill="#16161f" stroke="#a78bfa" stroke-opacity="0.5" stroke-width="1"/>
+        <text x="180" y="252" text-anchor="middle" fill="#a78bfa" font-size="10" font-weight="500">Multi-Query</text>
+
+        <!-- Optimized queries merge -->
+        <line x1="70" y1="266" x2="125" y2="290" stroke="#a78bfa" stroke-width="1"/>
+        <line x1="180" y1="266" x2="125" y2="290" stroke="#a78bfa" stroke-width="1"/>
+
+        <!-- Optimized Query -->
+        <rect x="55" y="290" width="140" height="40" rx="8" fill="#a78bfa" fill-opacity="0.12" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="125" y="315" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="600">Optimized Query</text>
+
+        <!-- Arrow to Retrieval -->
+        <line x1="195" y1="310" x2="290" y2="310" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#ah2)"/>
+
+        <!-- ===== RETRIEVAL ===== -->
+        <!-- Hybrid Search Box -->
+        <rect x="295" y="60" width="200" height="300" rx="12" fill="#16161f" stroke="#6366f1" stroke-width="1.5"/>
+        <text x="395" y="88" text-anchor="middle" fill="#6366f1" font-size="13" font-weight="700">Hybrid Search</text>
+
+        <!-- Dense -->
+        <rect x="315" y="105" width="160" height="45" rx="8" fill="#1e1e2a" stroke="#a78bfa" stroke-opacity="0.5" stroke-width="1"/>
+        <text x="395" y="125" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="600">Dense (Vector)</text>
+        <text x="395" y="142" text-anchor="middle" fill="#9898a8" font-size="9">시맨틱 유사도</text>
+
+        <!-- Sparse -->
+        <rect x="315" y="160" width="160" height="45" rx="8" fill="#1e1e2a" stroke="#fb923c" stroke-opacity="0.5" stroke-width="1"/>
+        <text x="395" y="180" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="600">Sparse (BM25)</text>
+        <text x="395" y="197" text-anchor="middle" fill="#9898a8" font-size="9">키워드 매칭</text>
+
+        <!-- RRF -->
+        <rect x="340" y="220" width="110" height="36" rx="8" fill="#6366f1" fill-opacity="0.2" stroke="#6366f1" stroke-width="1.5"/>
+        <text x="395" y="242" text-anchor="middle" fill="#6366f1" font-size="11" font-weight="700">RRF 결합</text>
+
+        <!-- Results -->
+        <rect x="330" y="272" width="130" height="36" rx="6" fill="#1e1e2a" stroke="#6366f1" stroke-opacity="0.5" stroke-width="1"/>
+        <text x="395" y="294" text-anchor="middle" fill="#e8e8ed" font-size="11" font-weight="500">Top-K 문서</text>
+        <!-- merge lines -->
+        <line x1="395" y1="150" x2="395" y2="158" stroke="#6366f1" stroke-width="1" stroke-dasharray="3 2"/>
+        <line x1="395" y1="205" x2="395" y2="218" stroke="#6366f1" stroke-width="1.5"/>
+        <line x1="395" y1="256" x2="395" y2="270" stroke="#6366f1" stroke-width="1.5"/>
+
+        <!-- Vector DB on the side -->
+        <rect x="310" y="370" width="170" height="50" rx="10" fill="#1e1e2a" stroke="#6366f1" stroke-width="1.5"/>
+        <text x="395" y="395" text-anchor="middle" fill="#6366f1" font-size="12" font-weight="600">Vector DB + BM25 Index</text>
+        <text x="395" y="412" text-anchor="middle" fill="#9898a8" font-size="9">멀티 인덱스 전략</text>
+        <line x1="395" y1="360" x2="395" y2="368" stroke="#6366f1" stroke-width="1" stroke-dasharray="4 3"/>
+
+        <!-- Arrow to Post-Retrieval -->
+        <line x1="497" y1="290" x2="578" y2="290" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#ah3)"/>
+
+        <!-- ===== POST-RETRIEVAL ===== -->
+        <!-- Reranker -->
+        <rect x="582" y="60" width="200" height="300" rx="12" fill="#16161f" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="682" y="88" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Post-Processing</text>
+
+        <rect x="602" y="105" width="160" height="50" rx="8" fill="#1e1e2a" stroke="#22d3ee" stroke-opacity="0.6" stroke-width="1.5"/>
+        <text x="682" y="127" text-anchor="middle" fill="#22d3ee" font-size="12" font-weight="700">Reranker</text>
+        <text x="682" y="145" text-anchor="middle" fill="#9898a8" font-size="9">Cross-Encoder 재순위화</text>
+
+        <line x1="682" y1="155" x2="682" y2="170" stroke="#22d3ee" stroke-width="1"/>
+
+        <!-- Compression -->
+        <rect x="602" y="172" width="160" height="44" rx="8" fill="#1e1e2a" stroke="#22d3ee" stroke-opacity="0.4" stroke-width="1"/>
+        <text x="682" y="194" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="600">Compression</text>
+        <text x="682" y="209" text-anchor="middle" fill="#9898a8" font-size="9">관련 부분만 추출</text>
+
+        <line x1="682" y1="216" x2="682" y2="230" stroke="#22d3ee" stroke-width="1"/>
+
+        <!-- Dedup -->
+        <rect x="602" y="232" width="160" height="44" rx="8" fill="#1e1e2a" stroke="#22d3ee" stroke-opacity="0.4" stroke-width="1"/>
+        <text x="682" y="254" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="600">Dedup & Filter</text>
+        <text x="682" y="269" text-anchor="middle" fill="#9898a8" font-size="9">중복 제거, MMR</text>
+
+        <!-- Refined Context -->
+        <rect x="612" y="296" width="140" height="36" rx="6" fill="#22d3ee" fill-opacity="0.12" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="682" y="318" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="600">Refined Context</text>
+        <line x1="682" y1="276" x2="682" y2="294" stroke="#22d3ee" stroke-width="1"/>
+
+        <!-- Arrow to Generate -->
+        <line x1="784" y1="314" x2="825" y2="314" stroke="#34d399" stroke-width="1.5" marker-end="url(#ah4)"/>
+
+        <!-- ===== GENERATE ===== -->
+        <rect x="828" y="70" width="112" height="290" rx="12" fill="#16161f" stroke="#fb923c" stroke-width="1.5"/>
+
+        <!-- Prompt -->
+        <rect x="843" y="95" width="82" height="50" rx="8" fill="#1e1e2a" stroke="#34d399" stroke-opacity="0.5" stroke-width="1"/>
+        <text x="884" y="117" text-anchor="middle" fill="#34d399" font-size="10" font-weight="600">Prompt</text>
+        <text x="884" y="135" text-anchor="middle" fill="#9898a8" font-size="8">Q + Context</text>
+
+        <line x1="884" y1="145" x2="884" y2="165" stroke="#fb923c" stroke-width="1.5"/>
+
+        <!-- LLM -->
+        <rect x="843" y="168" width="82" height="60" rx="10" fill="#fb923c" fill-opacity="0.12" stroke="#fb923c" stroke-width="2"/>
+        <text x="884" y="198" text-anchor="middle" fill="#fb923c" font-size="18" font-weight="800">LLM</text>
+        <text x="884" y="218" text-anchor="middle" fill="#9898a8" font-size="8">생성</text>
+
+        <line x1="884" y1="228" x2="884" y2="248" stroke="#fb923c" stroke-width="1.5"/>
+
+        <!-- Response -->
+        <rect x="843" y="250" width="82" height="36" rx="6" fill="#fb923c" fill-opacity="0.15" stroke="#fb923c" stroke-width="1"/>
+        <text x="884" y="272" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="600">Response</text>
+
+        <!-- 하단 범례 -->
+        <rect x="40" y="392" width="12" height="12" rx="3" fill="#a78bfa"/>
+        <text x="58" y="403" fill="#9898a8" font-size="10">쿼리 최적화</text>
+        <rect x="150" y="392" width="12" height="12" rx="3" fill="#6366f1"/>
+        <text x="168" y="403" fill="#9898a8" font-size="10">하이브리드 검색</text>
+        <rect x="270" y="392" width="12" height="12" rx="3" fill="#22d3ee"/>
+        <text x="288" y="403" fill="#9898a8" font-size="10">후처리 (Rerank + 압축)</text>
+      </svg>
+    </div>
 
     <!-- 3단계 탭 -->
     <div class="adv-tabs reveal">
@@ -524,6 +790,130 @@
     <p class="section-desc">
       파이프라인을 고정된 순서가 아닌 <strong>모듈 단위</strong>로 분리해서 태스크에 맞게 조합하는 패러다임입니다.
     </p>
+
+    <!-- Modular RAG 아키텍처 다이어그램 -->
+    <div class="arch-diagram reveal">
+      <svg class="arch-svg" viewBox="0 0 960 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="modGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.06"/>
+            <stop offset="100%" stop-color="#22d3ee" stop-opacity="0.06"/>
+          </linearGradient>
+          <marker id="mah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#a78bfa"/>
+          </marker>
+          <marker id="mahG" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#34d399"/>
+          </marker>
+          <marker id="mahR" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#f87171"/>
+          </marker>
+          <marker id="mahO" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#fb923c"/>
+          </marker>
+        </defs>
+
+        <rect x="0" y="0" width="960" height="480" rx="16" fill="url(#modGrad)"/>
+
+        <!-- User Query -->
+        <rect x="40" y="200" width="120" height="60" rx="10" fill="#1e1e2a" stroke="#a78bfa" stroke-width="2"/>
+        <text x="100" y="226" text-anchor="middle" fill="#e8e8ed" font-size="13" font-weight="700">Query</text>
+        <text x="100" y="244" text-anchor="middle" fill="#9898a8" font-size="10">사용자 질문</text>
+
+        <!-- Arrow to Router -->
+        <line x1="160" y1="230" x2="208" y2="230" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#mah)"/>
+
+        <!-- ROUTER — central hub -->
+        <rect x="212" y="180" width="130" height="100" rx="14" fill="#a78bfa" fill-opacity="0.12" stroke="#a78bfa" stroke-width="2"/>
+        <text x="277" y="218" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="800">Router</text>
+        <text x="277" y="240" text-anchor="middle" fill="#9898a8" font-size="10">질문 유형 판단</text>
+        <text x="277" y="255" text-anchor="middle" fill="#9898a8" font-size="10">경로 결정</text>
+
+        <!-- Path 1: Simple → Direct LLM (top) -->
+        <path d="M277 180 Q 277 120 370 120" fill="none" stroke="#34d399" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#mahG)"/>
+        <rect x="374" y="96" width="140" height="48" rx="8" fill="#1e1e2a" stroke="#34d399" stroke-width="1.5"/>
+        <text x="444" y="117" text-anchor="middle" fill="#34d399" font-size="11" font-weight="700">Direct LLM</text>
+        <text x="444" y="134" text-anchor="middle" fill="#9898a8" font-size="9">검색 불필요 → 바로 생성</text>
+        <text x="338" y="110" fill="#34d399" font-size="9" font-weight="600">단순 질문</text>
+
+        <!-- Path 2: Normal → Retrieve → Generate (middle) -->
+        <line x1="342" y1="220" x2="373" y2="220" stroke="#6366f1" stroke-width="1.5" marker-end="url(#mah)"/>
+
+        <!-- Retrieval Module -->
+        <rect x="376" y="186" width="130" height="68" rx="10" fill="#1e1e2a" stroke="#6366f1" stroke-width="1.5"/>
+        <text x="441" y="212" text-anchor="middle" fill="#6366f1" font-size="12" font-weight="700">Retrieval</text>
+        <text x="441" y="230" text-anchor="middle" fill="#9898a8" font-size="9">Multi-Source 검색</text>
+        <text x="441" y="244" text-anchor="middle" fill="#9898a8" font-size="9">Vector / Web / SQL</text>
+
+        <!-- Arrow to Judge -->
+        <line x1="506" y1="220" x2="543" y2="220" stroke="#6366f1" stroke-width="1.5" marker-end="url(#mah)"/>
+
+        <!-- Judge Module -->
+        <rect x="546" y="180" width="120" height="80" rx="10" fill="#fb923c" fill-opacity="0.1" stroke="#fb923c" stroke-width="2"/>
+        <text x="606" y="210" text-anchor="middle" fill="#fb923c" font-size="14" font-weight="800">Judge</text>
+        <text x="606" y="228" text-anchor="middle" fill="#9898a8" font-size="9">충분한가?</text>
+        <text x="606" y="244" text-anchor="middle" fill="#9898a8" font-size="9">품질 평가</text>
+
+        <!-- Judge → Sufficient → Generate -->
+        <line x1="666" y1="210" x2="718" y2="210" stroke="#34d399" stroke-width="1.5" marker-end="url(#mahG)"/>
+        <text x="692" y="200" fill="#34d399" font-size="9" font-weight="600">충분</text>
+
+        <!-- Judge → Insufficient → Re-Retrieve (loop back) -->
+        <path d="M606 260 Q 606 310 441 310 Q 441 310 441 258" fill="none" stroke="#f87171" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#mahR)"/>
+        <text x="530" y="304" fill="#f87171" font-size="9" font-weight="600">부족 → 재검색</text>
+
+        <!-- Judge → Ambiguous → Web Search -->
+        <path d="M606 260 Q 606 350 520 370" fill="none" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#mahO)"/>
+        <rect x="416" y="358" width="110" height="40" rx="8" fill="#1e1e2a" stroke="#fb923c" stroke-opacity="0.6" stroke-width="1"/>
+        <text x="471" y="378" text-anchor="middle" fill="#fb923c" font-size="10" font-weight="600">Web Search</text>
+        <text x="471" y="392" text-anchor="middle" fill="#9898a8" font-size="8">보조 소스</text>
+        <text x="580" y="356" fill="#fb923c" font-size="9" font-weight="600">모호</text>
+
+        <!-- Generate Module -->
+        <rect x="722" y="176" width="120" height="68" rx="10" fill="#1e1e2a" stroke="#34d399" stroke-width="2"/>
+        <text x="782" y="204" text-anchor="middle" fill="#34d399" font-size="14" font-weight="700">Generate</text>
+        <text x="782" y="224" text-anchor="middle" fill="#9898a8" font-size="9">LLM 응답 생성</text>
+        <text x="782" y="238" text-anchor="middle" fill="#9898a8" font-size="9">+ 출처 첨부</text>
+
+        <!-- Generate → Self-Evaluate -->
+        <line x1="842" y1="210" x2="868" y2="210" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#mah)"/>
+
+        <!-- Self-Evaluate -->
+        <rect x="872" y="172" width="68" height="76" rx="10" fill="#22d3ee" fill-opacity="0.1" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="906" y="200" text-anchor="middle" fill="#22d3ee" font-size="10" font-weight="700">Self</text>
+        <text x="906" y="214" text-anchor="middle" fill="#22d3ee" font-size="10" font-weight="700">Eval</text>
+        <text x="906" y="238" text-anchor="middle" fill="#9898a8" font-size="8">품질 OK?</text>
+
+        <!-- Self-Eval → Output (pass) -->
+        <line x1="906" y1="248" x2="906" y2="300" stroke="#34d399" stroke-width="1.5" marker-end="url(#mahG)"/>
+        <rect x="856" y="304" width="100" height="36" rx="8" fill="#34d399" fill-opacity="0.15" stroke="#34d399" stroke-width="1.5"/>
+        <text x="906" y="326" text-anchor="middle" fill="#34d399" font-size="12" font-weight="700">Response</text>
+
+        <!-- Self-Eval → loop back (fail) -->
+        <path d="M872 220 Q 830 280 782 248" fill="none" stroke="#f87171" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#mahR)"/>
+        <text x="824" y="275" fill="#f87171" font-size="8" font-weight="600">재생성</text>
+
+        <!-- Path 3: Complex → Multi-step (bottom) -->
+        <path d="M277 280 Q 277 370 374 408" fill="none" stroke="#f472b6" stroke-width="1.5" stroke-dasharray="6 3"/>
+        <text x="290" y="355" fill="#f472b6" font-size="9" font-weight="600">복잡 질문</text>
+
+        <!-- Multi-step Reasoning -->
+        <rect x="376" y="420" width="200" height="44" rx="8" fill="#1e1e2a" stroke="#f472b6" stroke-width="1.5"/>
+        <text x="476" y="442" text-anchor="middle" fill="#f472b6" font-size="11" font-weight="700">Iterative Retrieval + Memory</text>
+        <text x="476" y="458" text-anchor="middle" fill="#9898a8" font-size="9">멀티스텝 검색-생성 반복</text>
+
+        <!-- Multi-step → Judge -->
+        <path d="M576 442 Q 640 442 640 310 Q 640 260 606 260" fill="none" stroke="#f472b6" stroke-width="1" stroke-dasharray="4 3"/>
+
+        <!-- 하단 범례 -->
+        <line x1="40" y1="455" x2="60" y2="455" stroke="#34d399" stroke-width="2"/>
+        <text x="66" y="459" fill="#9898a8" font-size="9">통과 경로</text>
+        <line x1="140" y1="455" x2="160" y2="455" stroke="#f87171" stroke-width="2" stroke-dasharray="5 3"/>
+        <text x="166" y="459" fill="#9898a8" font-size="9">재시도 루프</text>
+        <line x1="250" y1="455" x2="270" y2="455" stroke="#fb923c" stroke-width="2" stroke-dasharray="5 3"/>
+        <text x="276" y="459" fill="#9898a8" font-size="9">보정 경로</text>
+      </svg>
+    </div>
 
     <!-- 모듈 그리드 -->
     <div class="module-grid reveal">
@@ -699,45 +1089,130 @@
       복잡한 멀티스텝 질문에 효과적입니다.
     </p>
 
-    <div class="agent-diagram reveal">
-      <div class="agent-loop">
-        <div class="agent-step agent-plan">
-          <div class="agent-icon">📋</div>
-          <h4>Plan</h4>
-          <p>질문을 분석하고 해결 계획 수립</p>
-        </div>
-        <div class="agent-connector">
-          <svg viewBox="0 0 60 30"><path d="M5 15 Q30 0 55 15" stroke="currentColor" stroke-width="2" fill="none"/><polygon points="55,15 48,10 48,20" fill="currentColor"/></svg>
-        </div>
-        <div class="agent-step agent-act">
-          <div class="agent-icon">🔧</div>
-          <h4>Act</h4>
-          <p>검색, DB 쿼리, API 호출 등 도구 실행</p>
-        </div>
-        <div class="agent-connector">
-          <svg viewBox="0 0 60 30"><path d="M5 15 Q30 0 55 15" stroke="currentColor" stroke-width="2" fill="none"/><polygon points="55,15 48,10 48,20" fill="currentColor"/></svg>
-        </div>
-        <div class="agent-step agent-observe">
-          <div class="agent-icon">👁️</div>
-          <h4>Observe</h4>
-          <p>결과를 분석하고 충분한지 판단</p>
-        </div>
-        <div class="agent-connector">
-          <svg viewBox="0 0 60 30"><path d="M5 15 Q30 0 55 15" stroke="currentColor" stroke-width="2" fill="none"/><polygon points="55,15 48,10 48,20" fill="currentColor"/></svg>
-        </div>
-        <div class="agent-step agent-reflect">
-          <div class="agent-icon">🪞</div>
-          <h4>Reflect</h4>
-          <p>답변 품질 평가, 부족하면 다시 Plan으로</p>
-        </div>
-      </div>
-      <div class="agent-loop-arrow">
-        <svg viewBox="0 0 100 40">
-          <path d="M90 5 Q50 35 10 5" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="5 3"/>
-          <polygon points="10,5 16,12 18,2" fill="currentColor"/>
-        </svg>
-        <span>반복</span>
-      </div>
+    <!-- Agentic RAG 아키텍처 다이어그램 -->
+    <div class="arch-diagram reveal">
+      <svg class="arch-svg" viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="agentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f472b6" stop-opacity="0.06"/>
+            <stop offset="100%" stop-color="#6366f1" stop-opacity="0.06"/>
+          </linearGradient>
+          <marker id="aah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#a78bfa"/>
+          </marker>
+          <marker id="aahC" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#22d3ee"/>
+          </marker>
+          <marker id="aahG" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#34d399"/>
+          </marker>
+          <marker id="aahP" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#f472b6"/>
+          </marker>
+        </defs>
+
+        <rect x="0" y="0" width="960" height="520" rx="16" fill="url(#agentGrad)"/>
+
+        <!-- 중앙: Agent Orchestrator -->
+        <rect x="340" y="160" width="280" height="200" rx="20" fill="#1e1e2a" stroke="#a78bfa" stroke-width="2.5"/>
+        <rect x="340" y="160" width="280" height="44" rx="20" fill="#a78bfa" fill-opacity="0.15"/>
+        <text x="480" y="187" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="800" letter-spacing="1">AGENT ORCHESTRATOR</text>
+
+        <!-- Plan -->
+        <rect x="365" y="220" width="105" height="50" rx="8" fill="#16161f" stroke="#a78bfa" stroke-opacity="0.6" stroke-width="1.5"/>
+        <text x="417" y="242" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="700">Plan</text>
+        <text x="417" y="260" text-anchor="middle" fill="#9898a8" font-size="9">하위 작업 분해</text>
+
+        <!-- Reason -->
+        <rect x="490" y="220" width="105" height="50" rx="8" fill="#16161f" stroke="#22d3ee" stroke-opacity="0.6" stroke-width="1.5"/>
+        <text x="542" y="242" text-anchor="middle" fill="#22d3ee" font-size="13" font-weight="700">Reason</text>
+        <text x="542" y="260" text-anchor="middle" fill="#9898a8" font-size="9">판단 & 선택</text>
+
+        <!-- Reflect -->
+        <rect x="420" y="286" width="120" height="50" rx="8" fill="#16161f" stroke="#fb923c" stroke-opacity="0.6" stroke-width="1.5"/>
+        <text x="480" y="308" text-anchor="middle" fill="#fb923c" font-size="13" font-weight="700">Reflect</text>
+        <text x="480" y="326" text-anchor="middle" fill="#9898a8" font-size="9">자체 품질 평가</text>
+
+        <!-- Internal arrows -->
+        <path d="M470 245 Q 480 250 490 245" fill="none" stroke="#6366f1" stroke-width="1" stroke-dasharray="3 2"/>
+        <path d="M542 270 Q 530 278 480 286" fill="none" stroke="#6366f1" stroke-width="1" stroke-dasharray="3 2"/>
+        <path d="M420 300 Q 400 290 390 260 Q 390 250 365 245" fill="none" stroke="#6366f1" stroke-width="1" stroke-dasharray="3 2"/>
+
+        <!-- User Query (left) -->
+        <rect x="40" y="230" width="140" height="60" rx="10" fill="#1e1e2a" stroke="#e8e8ed" stroke-width="1.5"/>
+        <circle cx="75" cy="260" r="15" fill="#a78bfa" fill-opacity="0.2" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="75" y="265" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="800">U</text>
+        <text x="130" y="256" text-anchor="middle" fill="#e8e8ed" font-size="12" font-weight="700">Query</text>
+        <text x="130" y="274" text-anchor="middle" fill="#9898a8" font-size="9">복잡한 질문</text>
+        <line x1="180" y1="260" x2="336" y2="260" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#aah)"/>
+
+        <!-- Response (right) -->
+        <rect x="780" y="230" width="140" height="60" rx="10" fill="#34d399" fill-opacity="0.1" stroke="#34d399" stroke-width="1.5"/>
+        <text x="850" y="256" text-anchor="middle" fill="#34d399" font-size="14" font-weight="700">Response</text>
+        <text x="850" y="274" text-anchor="middle" fill="#9898a8" font-size="9">최종 답변 + 출처</text>
+        <line x1="620" y1="260" x2="776" y2="260" stroke="#34d399" stroke-width="1.5" marker-end="url(#aahG)"/>
+        <text x="698" y="252" fill="#34d399" font-size="9" font-weight="600">완료</text>
+
+        <!-- ===== Tools (아래) ===== -->
+        <text x="480" y="410" text-anchor="middle" fill="#9898a8" font-size="11" font-weight="600" letter-spacing="2">TOOLS</text>
+
+        <!-- Tool: Vector Search -->
+        <rect x="80" y="430" width="130" height="66" rx="10" fill="#1e1e2a" stroke="#6366f1" stroke-width="1.5"/>
+        <text x="145" y="456" text-anchor="middle" fill="#6366f1" font-size="11" font-weight="700">Vector Search</text>
+        <text x="145" y="474" text-anchor="middle" fill="#9898a8" font-size="9">벡터 DB 검색</text>
+        <text x="145" y="488" text-anchor="middle" fill="#9898a8" font-size="9">시맨틱 매칭</text>
+        <path d="M145 430 Q 145 400 340 360" fill="none" stroke="#6366f1" stroke-width="1.5" marker-end="url(#aah)"/>
+
+        <!-- Tool: Web Search -->
+        <rect x="240" y="430" width="130" height="66" rx="10" fill="#1e1e2a" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="305" y="456" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="700">Web Search</text>
+        <text x="305" y="474" text-anchor="middle" fill="#9898a8" font-size="9">인터넷 검색</text>
+        <text x="305" y="488" text-anchor="middle" fill="#9898a8" font-size="9">실시간 정보</text>
+        <path d="M305 430 Q 350 400 420 360" fill="none" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#aahC)"/>
+
+        <!-- Tool: SQL Query -->
+        <rect x="400" y="430" width="130" height="66" rx="10" fill="#1e1e2a" stroke="#34d399" stroke-width="1.5"/>
+        <text x="465" y="456" text-anchor="middle" fill="#34d399" font-size="11" font-weight="700">SQL Query</text>
+        <text x="465" y="474" text-anchor="middle" fill="#9898a8" font-size="9">구조화 데이터</text>
+        <text x="465" y="488" text-anchor="middle" fill="#9898a8" font-size="9">테이블 조회</text>
+        <path d="M465 430 Q 480 400 480 362" fill="none" stroke="#34d399" stroke-width="1.5" marker-end="url(#aahG)"/>
+
+        <!-- Tool: Code Exec -->
+        <rect x="560" y="430" width="130" height="66" rx="10" fill="#1e1e2a" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="625" y="456" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="700">Code Exec</text>
+        <text x="625" y="474" text-anchor="middle" fill="#9898a8" font-size="9">코드 실행</text>
+        <text x="625" y="488" text-anchor="middle" fill="#9898a8" font-size="9">계산 & 분석</text>
+        <path d="M625 430 Q 580 400 540 360" fill="none" stroke="#fb923c" stroke-width="1.5"/>
+
+        <!-- Tool: API Call -->
+        <rect x="720" y="430" width="130" height="66" rx="10" fill="#1e1e2a" stroke="#f472b6" stroke-width="1.5"/>
+        <text x="785" y="456" text-anchor="middle" fill="#f472b6" font-size="11" font-weight="700">API Call</text>
+        <text x="785" y="474" text-anchor="middle" fill="#9898a8" font-size="9">외부 서비스</text>
+        <text x="785" y="488" text-anchor="middle" fill="#9898a8" font-size="9">데이터 연동</text>
+        <path d="M785 430 Q 700 390 620 360" fill="none" stroke="#f472b6" stroke-width="1.5"/>
+
+        <!-- ===== Memory (위 오른쪽) ===== -->
+        <rect x="720" y="90" width="160" height="100" rx="12" fill="#1e1e2a" stroke="#f472b6" stroke-width="1.5"/>
+        <text x="800" y="118" text-anchor="middle" fill="#f472b6" font-size="12" font-weight="700">Memory</text>
+        <rect x="740" y="130" width="120" height="20" rx="4" fill="#16161f" stroke="#f472b6" stroke-opacity="0.3" stroke-width="1"/>
+        <text x="800" y="144" text-anchor="middle" fill="#9898a8" font-size="8">대화 이력</text>
+        <rect x="740" y="155" width="120" height="20" rx="4" fill="#16161f" stroke="#f472b6" stroke-opacity="0.3" stroke-width="1"/>
+        <text x="800" y="169" text-anchor="middle" fill="#9898a8" font-size="8">검색 캐시 / 중간 결과</text>
+        <path d="M720 160 Q 650 170 620 180" fill="none" stroke="#f472b6" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#aahP)"/>
+
+        <!-- ===== Iteration Loop (왼쪽 위) ===== -->
+        <rect x="80" y="80" width="180" height="90" rx="12" fill="#1e1e2a" stroke="#fb923c" stroke-width="1.5"/>
+        <text x="170" y="108" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="700">Iteration Loop</text>
+        <text x="170" y="128" text-anchor="middle" fill="#9898a8" font-size="10">Step 1: 정보 수집</text>
+        <text x="170" y="145" text-anchor="middle" fill="#9898a8" font-size="10">Step 2: 분석 & 추론</text>
+        <text x="170" y="162" text-anchor="middle" fill="#9898a8" font-size="10">Step N: 답변 정제</text>
+        <path d="M260 130 Q 310 130 340 185" fill="none" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#aah)"/>
+
+        <!-- 반복 루프 화살표 -->
+        <path d="M340 340 Q 250 380 170 370 Q 100 360 100 300 Q 100 240 180 210" fill="none" stroke="#f87171" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <polygon points="180,210 172,220 185,218" fill="#f87171"/>
+        <text x="105" y="330" fill="#f87171" font-size="10" font-weight="600" transform="rotate(-90, 105, 330)">부족 시 재실행</text>
+      </svg>
     </div>
 
     <div class="agent-features reveal">

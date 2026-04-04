@@ -2100,6 +2100,41 @@ code {
   color: var(--text-primary);
 }
 
+/* ====== ARCHITECTURE DIAGRAMS ====== */
+.arch-diagram {
+  margin: 32px 0 40px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+}
+
+.arch-svg {
+  width: 100%;
+  min-width: 700px;
+  height: auto;
+  display: block;
+  font-family: var(--font-sans);
+}
+
+.arch-svg text {
+  font-family: var(--font-sans);
+}
+
+@media (max-width: 768px) {
+  .arch-diagram {
+    margin: 20px -16px 32px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  .arch-svg {
+    min-width: 600px;
+  }
+}
+
 /* ====== SCROLLBAR ====== */
 ::-webkit-scrollbar {
   width: 8px;
