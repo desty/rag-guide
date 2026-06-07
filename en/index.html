@@ -1248,6 +1248,16 @@
       </div>
       <p>A small specialist model generates multiple <strong>drafts</strong> in parallel, and a larger generalist model verifies them. The Draft-then-Verify pattern improves both accuracy and latency.</p>
     </div>
+
+    <!-- Sufficient Context -->
+    <div class="bonus-technique reveal">
+      <div class="bonus-header">
+        <h4>Sufficient Context</h4>
+        <span class="paper-badge">Added 2026.06</span>
+      </div>
+      <p>A formalization of the <strong>Reflect → re-run if insufficient</strong> loop in the diagram above. The key question is whether <strong>the context gathered so far is enough to answer</strong>. "Relevant" and "sufficient" are not the same — you can retrieve relevant documents and still be missing the information needed for a definitive answer.</p>
+      <p><strong>The RAG paradox:</strong> adding context makes the model overconfident, so instead of abstaining when it doesn't know, it <strong>hallucinates</strong>. In one study, Claude 3.5 Sonnet's abstention rate dropped from 84% to 52% with RAG (<a href="https://arxiv.org/abs/2411.06037" target="_blank">Sufficient Context, ICLR 2025</a>). The fix: use Gemini 1.5 Pro as a sufficiency autorater (~93% accuracy) to answer only when context is sufficient and re-retrieve or abstain otherwise — <strong>selective generation</strong>, which Google productized as the <a href="https://research.google/blog/unlocking-dependable-responses-with-gemini-enterprise-agent-platforms-agentic-rag/" target="_blank">stopping condition of the agent loop in Gemini Enterprise</a> (2026).</p>
+    </div>
   </div>
 </section>
 
@@ -1602,6 +1612,14 @@
           <h4>SimRAG (Self-Improving RAG)</h4>
           <p class="paper-authors">NAACL 2025</p>
           <p>Generates self-training QA pairs from unlabeled corpora. Domain adaptation without labeling costs. Validated on 11 datasets.</p>
+        </div>
+      </div>
+      <div class="paper-item">
+        <div class="paper-year">2025</div>
+        <div class="paper-content">
+          <h4>Sufficient Context: A New Lens on RAG</h4>
+          <p class="paper-authors">Joren et al. — ICLR 2025</p>
+          <p>Reframes retrieval quality as "sufficiency" rather than "relevance." Proposes an autorater (Gemini 1.5 Pro, ~93% accuracy) that judges whether context is sufficient, plus selective generation that abstains when it isn't. Shows the paradox that RAG can erode a model's ability to abstain.</p>
         </div>
       </div>
       <div class="paper-item">

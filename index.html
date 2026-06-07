@@ -1265,6 +1265,16 @@
       </div>
       <p>작은 전문가 모델이 여러 개의 <strong>초안(draft)</strong>을 병렬로 생성하고, 큰 범용 모델이 이를 검증하는 방식. Draft-then-Verify 패턴으로 정확도와 지연시간 모두 개선합니다.</p>
     </div>
+
+    <!-- Sufficient Context -->
+    <div class="bonus-technique reveal">
+      <div class="bonus-header">
+        <h4>Sufficient Context (충분성 판단)</h4>
+        <span class="paper-badge">2026.06 추가</span>
+      </div>
+      <p>위 다이어그램의 <strong>Reflect → 부족 시 재실행</strong> 루프를 형식화한 개념. 핵심 질문은 "지금 모은 컨텍스트가 답하기에 <strong>충분한가</strong>"입니다. '관련 있음(relevant)'과 '충분함(sufficient)'은 다릅니다 — 관련 문서를 찾아도 확정적 답에 필요한 정보가 빠져 있으면 불충분입니다.</p>
+      <p><strong>RAG의 역설:</strong> 컨텍스트를 붙이면 모델이 과신해서, 모를 때 <strong>기권하지 못하고 환각합니다</strong>. 한 연구에서 Claude 3.5 Sonnet의 기권율은 RAG 적용 시 84%→52%로 떨어졌습니다(<a href="https://arxiv.org/abs/2411.06037" target="_blank">Sufficient Context, ICLR 2025</a>). 그래서 Gemini 1.5 Pro를 충분성 판정기(autorater, ~93% 정확도)로 써서 충분할 때만 답하고 불충분하면 재검색·기권하는 <strong>selective generation</strong>이 제안됐고, 구글은 이를 <a href="https://research.google/blog/unlocking-dependable-responses-with-gemini-enterprise-agent-platforms-agentic-rag/" target="_blank">Gemini Enterprise의 에이전트 루프 정지조건</a>으로 제품화했습니다(2026).</p>
+    </div>
   </div>
 </section>
 
@@ -1624,6 +1634,14 @@
       <div class="paper-item">
         <div class="paper-year">2025</div>
         <div class="paper-content">
+          <h4>Sufficient Context: A New Lens on RAG</h4>
+          <p class="paper-authors">Joren et al. — ICLR 2025</p>
+          <p>검색 품질을 '관련성'이 아니라 '충분성'으로 다시 봄. 충분 여부를 판정하는 autorater(Gemini 1.5 Pro, ~93% 정확도)와, 불충분하면 기권하는 selective generation 제안. RAG가 오히려 모델의 기권 능력을 떨어뜨린다는 역설을 규명.</p>
+        </div>
+      </div>
+      <div class="paper-item">
+        <div class="paper-year">2025</div>
+        <div class="paper-content">
           <h4>MCP (Model Context Protocol)</h4>
           <p class="paper-authors">Anthropic, 2025</p>
           <p>AI 모델과 외부 도구/데이터를 연결하는 오픈 표준 프로토콜. Agentic RAG의 도구 통합을 표준화.</p>
@@ -1655,7 +1673,7 @@
         <a href="https://www.linkedin.com/in/desty" target="_blank" style="opacity:0.7;transition:opacity 0.3s;">LinkedIn</a>
       </div>
       <div style="margin-top:12px;font-size:0.8rem;opacity:0.4;">Built by <a href="https://desty.github.io/" style="opacity:1;">desty</a></div>
-      <span class="footer-version" style="margin-top:8px;">v2026.04</span>
+      <span class="footer-version" style="margin-top:8px;">v2026.06</span>
     </div>
   </div>
 </footer>
