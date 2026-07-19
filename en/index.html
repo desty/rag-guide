@@ -49,8 +49,8 @@
         <span class="stat-label">RAG papers published in 2024</span>
       </div>
       <div class="stat">
-        <span class="stat-number">50%+</span>
-        <span class="stat-label">Accuracy gain from retrieval optimization alone</span>
+        <span class="stat-number">Domain-specific</span>
+        <span class="stat-label">Measure retrieval gains on your own eval set</span>
       </div>
       <div class="stat">
         <span class="stat-number">3 Gens</span>
@@ -678,7 +678,7 @@
             <div class="chunk-comparison">
               <div class="chunk-type">
                 <strong>Recursive</strong>
-                <span class="chunk-desc">Recursively split using separator hierarchy. Most stable (69% win rate)</span>
+                <span class="chunk-desc">Recursively split using separator hierarchy. A strong baseline that still needs evaluation</span>
               </div>
               <div class="chunk-type">
                 <strong>Semantic</strong>
@@ -733,7 +733,7 @@
           </div>
           <div class="technique-card">
             <h4>Fine-tuned Embedding</h4>
-            <p>Further trains embedding models with domain-specific data. Reports show <strong>12~30%</strong> performance improvement over general models. Highly effective in specialized domains like medical, legal, and finance.</p>
+            <p>Further trains embedding models with domain-specific data. Gains vary substantially by dataset and setup, so compare against the general model on your actual domain eval set.</p>
           </div>
           <div class="technique-card">
             <h4>Multi-Index Strategy</h4>
@@ -772,7 +772,7 @@
                 <div class="rerank-item">Doc B <span class="score">0.45</span></div>
               </div>
             </div>
-            <p class="technique-note">MAP (Mean Average Precision) <strong>52% improvement</strong> reported — Cohere Rerank, bge-reranker, FlashRank, etc.</p>
+            <p class="technique-note">Evaluate candidates such as Cohere Rerank, bge-reranker, and FlashRank using MAP or nDCG together with added latency.</p>
           </div>
           <div class="technique-card">
             <h4>Document Compression</h4>
@@ -1454,7 +1454,7 @@
             <tr>
               <td><strong>Recursive</strong></td>
               <td>Recursively split using separator hierarchy</td>
-              <td>Stable (69% win rate)</td>
+              <td>Strong baseline · evaluate locally</td>
               <td>Requires separator configuration</td>
               <td>General purpose (default recommendation)</td>
             </tr>
@@ -1494,7 +1494,7 @@
       <div class="tip-card">
         <div class="tip-icon">🎯</div>
         <h4>Optimize Retrieval First</h4>
-        <p>Before switching LLMs, improve retrieval quality. Improving retrieval alone with the same model can yield <strong>50%+</strong> accuracy improvement.</p>
+        <p>Before switching LLMs, diagnose retrieval quality. Hold the model fixed and evaluate retrieval changes on your own questions.</p>
       </div>
       <div class="tip-card">
         <div class="tip-icon">📊</div>

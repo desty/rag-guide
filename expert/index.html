@@ -280,7 +280,7 @@
           </div>
           <div class="opt recommended">
             <strong>Hybrid (Dense + BM25) ✓</strong>
-            <span>대부분의 프로덕션 권장. RRF로 결합. 검색 실패율 ~35% 감소.</span>
+            <span>Dense와 BM25의 오류가 다를 때 유용. RRF로 결합하고 자체 평가셋에서 비교.</span>
           </div>
           <div class="opt">
             <strong>Hybrid + Late Interaction</strong>
@@ -293,7 +293,7 @@
         <div class="decision-options">
           <div class="opt recommended">
             <strong>Yes — 거의 항상 ✓</strong>
-            <span>MAP +52% 향상. 100ms 이하 추가 레이턴시. Top-100 → Top-5 재순위.</span>
+            <span>Top-100 → Top-5 재순위. MAP·nDCG 향상과 추가 레이턴시를 함께 측정.</span>
           </div>
           <div class="opt">
             <strong>Skip — 초저지연 요구시</strong>
@@ -329,14 +329,14 @@
       <span class="section-num">02</span>
       <div>
         <h2>Chunking Strategy</h2>
-        <p class="section-desc">청킹은 RAG 품질의 기초. 전략에 따라 검색 정확도가 20~40% 달라집니다.</p>
+        <p class="section-desc">청킹은 RAG 품질의 기초이며 최적 전략은 문서 구조와 질문 분포에 따라 달라집니다.</p>
       </div>
     </div>
 
     <div class="insight-box reveal">
       <div class="insight-icon">📊</div>
       <div class="insight-text">
-        <strong>Vectara 벤치마크 핵심 결과:</strong> Recursive 청킹이 69% 승률로 가장 안정적. Semantic 청킹은 높은 재현율을 보이지만 조각이 작아 end-to-end 정확도에서 불리. 청크 크기 256~512 토큰이 대부분의 태스크에서 최적.
+        <strong>청킹 비교의 핵심:</strong> Recursive·semantic·document-aware 전략은 문서와 질문 유형에 따라 순위가 바뀝니다. 256~512 토큰은 시작점일 뿐이며, 자체 질문셋으로 end-to-end 답변 품질까지 비교하세요.
       </div>
     </div>
 
@@ -479,7 +479,7 @@
     <div class="tips-row reveal">
       <div class="tip">
         <div class="tip-title">💡 Overlap 전략</div>
-        <p>청크 간 <code>10~20%</code> overlap 권장. 문맥 단절을 방지. 50% 이상은 중복 노이즈 발생.</p>
+        <p>Overlap은 문맥 단절을 줄이지만 중복 검색과 인덱스 비용을 늘립니다. 0을 포함한 여러 값을 자체 평가하세요.</p>
       </div>
       <div class="tip">
         <div class="tip-title">💡 코드 청킹</div>
@@ -504,7 +504,7 @@
       <span class="section-num">03</span>
       <div>
         <h2>Embedding Models</h2>
-        <p class="section-desc">임베딩 모델 선택이 검색 품질의 50% 이상을 결정합니다. 도메인 벤치마크가 핵심.</p>
+        <p class="section-desc">임베딩 모델은 검색 품질의 핵심 변수입니다. 공개 순위보다 도메인 벤치마크를 우선하세요.</p>
       </div>
     </div>
 
@@ -575,7 +575,7 @@
     </div>
 
     <div class="callout reveal">
-      <strong>⚠️ MTEB만 보지 마세요.</strong> 범용 벤치마크 점수와 실제 도메인 성능은 다릅니다. 반드시 <strong>자체 데이터셋에서 벤치마크</strong>하세요. 도메인 특화 파인튜닝 시 12~30% 추가 성능 향상 가능.
+      <strong>⚠️ MTEB만 보지 마세요.</strong> 범용 벤치마크 점수와 실제 도메인 성능은 다릅니다. 파인튜닝 효과도 데이터마다 달라지므로 반드시 <strong>자체 데이터셋에서 벤치마크</strong>하세요.
     </div>
 
     <!-- 선택 가이드 -->
@@ -598,7 +598,7 @@
       <div class="guide-card">
         <h4>비용 최적화</h4>
         <div class="guide-rec">Matryoshka (OpenAI 256d) 또는 Binary Quantization</div>
-        <p>차원을 3072 → 256으로 축소해도 성능 5%만 감소. 스토리지 12x 절약.</p>
+        <p>Matryoshka를 지원하는 모델은 차원 축소로 스토리지를 줄일 수 있습니다. 정확도 손실은 모델·데이터별로 측정하세요.</p>
       </div>
     </div>
   </div>
@@ -611,7 +611,7 @@
       <span class="section-num">04</span>
       <div>
         <h2>Retrieval Engineering</h2>
-        <p class="section-desc">검색 품질이 전체 RAG 성능의 상한선을 결정합니다. 같은 LLM에서 검색만 개선해도 50%+ 향상.</p>
+        <p class="section-desc">검색 품질은 전체 RAG 성능의 상한을 제한합니다. 같은 LLM을 고정하고 검색 전후를 평가하세요.</p>
       </div>
     </div>
 
@@ -1093,19 +1093,19 @@
     <div class="tips-row reveal">
       <div class="tip">
         <div class="tip-title">🔄 Semantic Cache</div>
-        <p>유사 질문 임베딩 비교 → 캐시 히트 시 검색/LLM 스킵. <strong>20~40% 비용 절감</strong>. Redis + 코사인 유사도 > 0.95.</p>
+        <p>유사 질문 임베딩 비교 → 캐시 히트 시 검색/LLM 스킵. 절감률은 반복 질문 비율과 임계값별 오답률에 따라 달라집니다.</p>
       </div>
       <div class="tip">
         <div class="tip-title">📐 Matryoshka Embedding</div>
-        <p>3072d → 256d로 차원 축소. 스토리지 12x 절약, 검색 속도 3x 향상. 정확도 5%만 감소.</p>
+        <p>지원 모델에서 차원을 줄여 스토리지와 검색 비용을 낮춥니다. 속도와 정확도 변화는 실제 인덱스에서 측정하세요.</p>
       </div>
       <div class="tip">
         <div class="tip-title">🎯 Router로 분기</div>
-        <p>단순 질문은 검색 없이 LLM 직접 답변. <strong>30~50% 검색 비용 절감</strong>. 경량 분류기로 구현.</p>
+        <p>단순 질문은 검색 없이 LLM이 직접 답하게 할 수 있습니다. 절감률과 오답 위험은 라우팅 분포로 측정하세요.</p>
       </div>
       <div class="tip">
         <div class="tip-title">📦 Prompt Compression</div>
-        <p>컨텍스트를 LLMLingua로 압축. 토큰 50~70% 절약. LLM API 비용 직접 절감.</p>
+        <p>LLMLingua 같은 도구로 컨텍스트를 압축할 수 있습니다. 토큰 절감과 답변 손실을 같은 평가셋에서 비교하세요.</p>
       </div>
     </div>
 

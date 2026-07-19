@@ -271,7 +271,7 @@
           </div>
           <div class="opt recommended">
             <strong>Hybrid (Dense + BM25) ✓</strong>
-            <span>Recommended for most production use. Combined via RRF. ~35% reduction in retrieval failures.</span>
+            <span>Useful when dense and BM25 fail differently. Combine via RRF and compare on your own eval set.</span>
           </div>
           <div class="opt">
             <strong>Hybrid + Late Interaction</strong>
@@ -284,7 +284,7 @@
         <div class="decision-options">
           <div class="opt recommended">
             <strong>Yes — Almost always ✓</strong>
-            <span>+52% MAP improvement. Under 100ms added latency. Re-ranks Top-100 → Top-5.</span>
+            <span>Re-ranks Top-100 → Top-5. Measure MAP or nDCG gains together with added latency.</span>
           </div>
           <div class="opt">
             <strong>Skip — For ultra-low latency</strong>
@@ -320,14 +320,14 @@
       <span class="section-num">02</span>
       <div>
         <h2>Chunking Strategy</h2>
-        <p class="section-desc">Chunking is the foundation of RAG quality. The right strategy can improve retrieval accuracy by 20-40%.</p>
+        <p class="section-desc">Chunking is foundational to RAG quality, and the best strategy depends on document structure and question distribution.</p>
       </div>
     </div>
 
     <div class="insight-box reveal">
       <div class="insight-icon">📊</div>
       <div class="insight-text">
-        <strong>Vectara Benchmark Key Findings:</strong> Recursive chunking was most stable with a 69% win rate. Semantic chunking shows high recall but produces smaller fragments, which can hurt end-to-end accuracy. Chunk sizes of 256-512 tokens are optimal for most tasks.
+        <strong>How to compare chunking:</strong> Recursive, semantic, and document-aware strategies can rank differently by corpus and question type. Treat 256-512 tokens as a starting range and compare end-to-end answer quality on your own questions.
       </div>
     </div>
 
@@ -470,7 +470,7 @@
     <div class="tips-row reveal">
       <div class="tip">
         <div class="tip-title">💡 Overlap Strategy</div>
-        <p><code>10-20%</code> overlap between chunks is recommended. Prevents context breaks. Over 50% causes duplicate noise.</p>
+        <p>Overlap can reduce context breaks but increases duplicate retrieval and index cost. Evaluate several values, including zero.</p>
       </div>
       <div class="tip">
         <div class="tip-title">💡 Code Chunking</div>
@@ -495,7 +495,7 @@
       <span class="section-num">03</span>
       <div>
         <h2>Embedding Models</h2>
-        <p class="section-desc">Embedding model choice determines over 50% of retrieval quality. Domain benchmarks are key.</p>
+        <p class="section-desc">Embedding choice is a key retrieval variable. Prioritize domain benchmarks over public leaderboards.</p>
       </div>
     </div>
 
@@ -566,7 +566,7 @@
     </div>
 
     <div class="callout reveal">
-      <strong>⚠️ Don't rely on MTEB alone.</strong> Generic benchmark scores differ from actual domain performance. Always <strong>benchmark on your own dataset</strong>. Domain-specific fine-tuning can yield 12-30% additional improvement.
+      <strong>⚠️ Don't rely on MTEB alone.</strong> Generic benchmark scores differ from actual domain performance, and fine-tuning gains vary by dataset. Always <strong>benchmark on your own data</strong>.
     </div>
 
     <!-- Selection Guide -->
@@ -589,7 +589,7 @@
       <div class="guide-card">
         <h4>Cost Optimization</h4>
         <div class="guide-rec">Matryoshka (OpenAI 256d) or Binary Quantization</div>
-        <p>Reducing dimensions from 3072 → 256 loses only 5% accuracy. Saves 12x storage.</p>
+        <p>Models with Matryoshka support can trade embedding dimensions for storage. Measure the accuracy loss on your own data.</p>
       </div>
     </div>
   </div>
@@ -602,7 +602,7 @@
       <span class="section-num">04</span>
       <div>
         <h2>Retrieval Engineering</h2>
-        <p class="section-desc">Retrieval quality sets the upper bound of overall RAG performance. Improving retrieval alone can yield 50%+ gains with the same LLM.</p>
+        <p class="section-desc">Retrieval quality constrains overall RAG performance. Hold the LLM fixed and evaluate retrieval changes directly.</p>
       </div>
     </div>
 
@@ -1070,19 +1070,19 @@
     <div class="tips-row reveal">
       <div class="tip">
         <div class="tip-title">🔄 Semantic Cache</div>
-        <p>Compare similar query embeddings → skip retrieval/LLM on cache hit. <strong>20-40% cost reduction</strong>. Redis + cosine similarity > 0.95.</p>
+        <p>Compare similar query embeddings and skip retrieval or generation on a safe cache hit. Savings depend on repeated-query share and threshold error rates.</p>
       </div>
       <div class="tip">
         <div class="tip-title">📐 Matryoshka Embedding</div>
-        <p>Reduce dimensions from 3072d → 256d. 12x storage savings, 3x faster search. Only 5% accuracy loss.</p>
+        <p>Reduce dimensions on supported models to lower storage and search cost. Measure speed and accuracy on the actual index.</p>
       </div>
       <div class="tip">
         <div class="tip-title">🎯 Router Branching</div>
-        <p>Simple questions get direct LLM answers without retrieval. <strong>30-50% retrieval cost savings</strong>. Implement with a lightweight classifier.</p>
+        <p>Simple queries can bypass retrieval and go directly to the LLM. Measure savings and wrong-route risk from your traffic distribution.</p>
       </div>
       <div class="tip">
         <div class="tip-title">📦 Prompt Compression</div>
-        <p>Compress context with LLMLingua. Save 50-70% tokens. Direct LLM API cost reduction.</p>
+        <p>Compress context with tools such as LLMLingua. Compare token savings and answer-quality loss on the same eval set.</p>
       </div>
     </div>
 

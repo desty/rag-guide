@@ -66,8 +66,8 @@
         <span class="stat-label">2024년 RAG 논문 수</span>
       </div>
       <div class="stat">
-        <span class="stat-number">50%+</span>
-        <span class="stat-label">검색 최적화만으로 정확도 향상</span>
+        <span class="stat-number">도메인별</span>
+        <span class="stat-label">검색 개선 효과는 자체 평가로 측정</span>
       </div>
       <div class="stat">
         <span class="stat-number">3세대</span>
@@ -695,7 +695,7 @@
             <div class="chunk-comparison">
               <div class="chunk-type">
                 <strong>Recursive</strong>
-                <span class="chunk-desc">구분자 계층으로 재귀 분할. 가장 안정적 (69% 승률)</span>
+                <span class="chunk-desc">구분자 계층으로 재귀 분할. 강한 기본선이지만 자체 평가 필요</span>
               </div>
               <div class="chunk-type">
                 <strong>Semantic</strong>
@@ -750,7 +750,7 @@
           </div>
           <div class="technique-card">
             <h4>Fine-tuned Embedding</h4>
-            <p>도메인 특화 데이터로 임베딩 모델을 추가 학습합니다. 일반 모델 대비 <strong>12~30%</strong> 성능 향상이 보고됩니다. 의료, 법률, 금융 등 전문 도메인에서 효과가 큽니다.</p>
+            <p>도메인 특화 데이터로 임베딩 모델을 추가 학습합니다. 개선 폭은 데이터와 평가 방식에 따라 크게 달라지므로 실제 도메인 평가셋에서 일반 모델과 비교해야 합니다.</p>
           </div>
           <div class="technique-card">
             <h4>Multi-Index 전략</h4>
@@ -789,7 +789,7 @@
                 <div class="rerank-item">문서 B <span class="score">0.45</span></div>
               </div>
             </div>
-            <p class="technique-note">MAP(Mean Average Precision) <strong>52% 향상</strong> 보고 — Cohere Rerank, bge-reranker, FlashRank 등</p>
+            <p class="technique-note">Cohere Rerank, bge-reranker, FlashRank 등을 후보로 두고 도입 전후의 MAP·nDCG·지연시간을 함께 측정하세요.</p>
           </div>
           <div class="technique-card">
             <h4>문서 압축 (Compression)</h4>
@@ -1471,7 +1471,7 @@
             <tr>
               <td><strong>Recursive</strong></td>
               <td>구분자 계층으로 재귀 분할</td>
-              <td>안정적 (69% 승률)</td>
+              <td>강한 기본선 · 자체 평가 필요</td>
               <td>구분자 설정 필요</td>
               <td>범용 (기본 추천)</td>
             </tr>
@@ -1511,7 +1511,7 @@
       <div class="tip-card">
         <div class="tip-icon">🎯</div>
         <h4>검색 최적화가 먼저</h4>
-        <p>LLM을 바꾸기 전에 검색 품질을 올리세요. 같은 모델에서 검색만 개선해도 <strong>50%+</strong> 정확도 향상 가능.</p>
+        <p>LLM을 바꾸기 전에 검색 품질을 진단하세요. 같은 모델을 고정하고 검색 전후를 자체 평가해야 합니다.</p>
       </div>
       <div class="tip-card">
         <div class="tip-icon">📊</div>
