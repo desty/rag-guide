@@ -922,8 +922,8 @@
       <p>Self-RAG의 <code>[IsRel]</code>(관련?)·<code>[IsSup]</code>(근거?)를 한 단계 밀어붙인 질문 — "이 컨텍스트만으로 <strong>확정적 답이 가능한가?</strong>" 관련 문서를 찾아도 핵심 사실이 빠지면 <strong>불충분</strong>입니다. Gemini 1.5 Pro를 판정기(autorater)로 쓰면 ~93% 정확도로 충분/불충분을 가립니다.</p>
       <div class="crag-paths">
         <div class="crag-path correct"><strong>충분 →</strong> 답변 생성</div>
-        <div class="crag-path ambiguous"><strong>불충분 →</strong> 재검색(쿼리 재작성) 또는 기권</div>
-        <div class="crag-path incorrect"><strong>RAG의 역설 —</strong> 컨텍스트를 붙이면 과신해 기권을 못 함 (Claude 3.5 Sonnet 기권율 84%→52%). selective generation이 confidence + 충분성 신호로 이를 보정.</div>
+        <div class="crag-path ambiguous"><strong>불충분 →</strong> 재검색(쿼리 재작성) 또는 '모른다' 응답</div>
+        <div class="crag-path incorrect"><strong>RAG의 역설 —</strong> 컨텍스트를 붙이면 과신해 '모른다'를 못 함 (Claude 3.5 Sonnet '모른다' 응답률 84%→52%). selective generation이 confidence + 충분성 신호로 이를 보정.</div>
       </div>
       <p style="margin-top:12px;">구글은 이 판정기를 <a href="https://research.google/blog/unlocking-dependable-responses-with-gemini-enterprise-agent-platforms-agentic-rag/" target="_blank">Gemini Enterprise 에이전트 루프의 정지조건(Sufficient Context Agent)</a>으로 제품화했습니다(2026). <a href="https://arxiv.org/abs/2411.06037" target="_blank">원논문 →</a> · <a href="https://desty.github.io/blog/34-sufficient-context/" target="_blank">해설 글(블로그 #34) →</a></p>
     </div>
